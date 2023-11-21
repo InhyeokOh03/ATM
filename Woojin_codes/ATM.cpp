@@ -41,12 +41,15 @@ namespace Records {
         }
     }
 
-
+    void ATM::passwordCheck() {
+        
+    }
 
 
     void ATM::uDepositCash(int inCash) {
-        // 현금 입금 로직 구현
-        // 예: 입금한 현금을 처리하는 코드
+        /*
+
+        */
     }
 
     void ATM::uDepositCheck(int inCheck) {

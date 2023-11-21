@@ -14,6 +14,7 @@ namespace Records{
         public:
             ATM();
             void userAuthorization(Card& Card);
+            void passwordCheck();
             void uDepositCash(int inCash);
             void uDepositCheck(int inCheck);
             void uWithdrawCash(int outCash);

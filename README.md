@@ -6,6 +6,10 @@ OOP term project
 **ATM.cpp**
 - method
   - userAuthorization
+  - passwordCheck
+
+**TEST**
+- testing code
 
 ### 김우진
 **Transaction 클래스**
