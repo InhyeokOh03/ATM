@@ -14,10 +14,11 @@ namespace Records{
         public:
             ATM();
             void userAuthorization();
-            void depositCash(int inCash);
-            void depositCheck(int inCheck);
-            void withdrawCash(int outCash);
-            
+            void uDepositCash(int inCash);
+            void uDepositCheck(int inCheck);
+            void uWithdrawCash(int outCash);
+            void uCashTransfer(int inAccountNum, int inAmountOfCash);
+            void uMoneyTransfer(int inAccountNum, int inAmountOfMoney);
 
         protected:
             bool isMulti;
