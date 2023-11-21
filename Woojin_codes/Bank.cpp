@@ -10,7 +10,7 @@ namespace Records{
     {
     }
     void Bank::makeAccount(){
-
+        //후에 인터페이스로 옮길 예정
     }
     void Bank::setBankName(std::string inBankName){
         mBankName = inBankName;
