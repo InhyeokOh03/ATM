@@ -13,7 +13,7 @@ namespace Records{
     class ATM{
         public:
             ATM();
-            void userAuthorization();
+            void userAuthorization(Card& Card);
             void uDepositCash(int inCash);
             void uDepositCheck(int inCheck);
             void uWithdrawCash(int outCash);
