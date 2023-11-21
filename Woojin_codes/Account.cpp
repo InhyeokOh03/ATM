@@ -1,18 +1,19 @@
+#include <iostream>
 #include "Account.h"
 using namespace std;
 namespace Records{
-    Account::Account(string BankName, string UserName, string AccountNumber, int AvailableMoney)
-        : mBankName(BankName)
-        , mUserName(UserName)
-        , mAccountNumber(AccountNumber)
-        , mAvailableMoney(AvailableMoney)
+    Account::Account()
+        : mBankName("")
+        , mUserName("")
+        , mAccountNumber("")
+        , mAvailableMoney(0)
     {
     }
     Account::~Account()
     {
     }
 
-    Transaction& Account::addTransaction(string inCardNum, int inTransType, int inAmountOfMoney)
+    Transaction& Account::addTransaction(string inBankName, string inCardNum, int inTransType, int inAmountOfMoney)
     {
         Transaction theTransaction;
         theTransaction.setCardNum(inCardNum);
@@ -48,5 +49,11 @@ namespace Records{
     }
     int Account::getAvailableMoney(){
         return mAvailableMoney;
+    }
+    void Account::display() const{
+        cout << "계정 [은행: " << mBankName;
+        cout << ", 계좌 번호: " << mAccountNumber;
+        cout << ", 소유자: " << mUserName;
+        cout << "] 잔액: " << mAvailableMoney << endl;;
     }
 }

@@ -6,7 +6,7 @@ namespace Records{
 
     class Account{
         public:
-            Account(std::string BankName, std::string UserName, std::string AccountNumber, int AvailableMoney);
+            Account();
             ~Account();
             Transaction& addTransaction(std::string inCardNum, int inTransType, int inAmountOfMoney);
             void setBankName(std::string inBankName);

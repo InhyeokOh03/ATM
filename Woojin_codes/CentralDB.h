@@ -1,15 +1,17 @@
-/*
-ATM 정보를 담은 벡터,
-계좌를 담은 벡터,
-
-이를 콘솔에다가 표시해주는 함수
-*/
-
-#include <string>
-#include <vector>
-
+#include "ATM.h"
 #include "Account.h"
 
-using namespace std;
+namespace Records{
+    class CentralDB{
+        public:
+            ATM& addATM();
+            Account& addAccount(std::string inBankName, std::string inUserName, std::string inAccountNumber, int inAvailableMoney);
+            void displayATM() const;
+            void displayAccount() const;
+            void displayAll() const;
 
-// 계좌를 return 하는 함수
+        protected:
+            std::vector<ATM> mATMs;
+            std::vector<Account> mAccounts;
+    };
+}
