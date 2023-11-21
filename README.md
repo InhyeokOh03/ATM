@@ -2,6 +2,11 @@
 OOP term project
 
 ## 개발 진척 상황
+### 오인혁
+**ATM.cpp**
+- method
+  - userAuthorization
+
 ### 김우진
 **Transaction 클래스**
 - 변수
