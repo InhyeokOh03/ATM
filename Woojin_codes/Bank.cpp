@@ -1,24 +1,28 @@
 #include <iostream>
 #include <stdexcept>
 #include "Bank.h"
-#include "Card.h"
-
 using namespace std;
+
 namespace Records{
-    Bank::Bank(std::string inBankName)
-    : mBankName(inBankName)
+
+    Bank::Bank()
+    : mBankName("")
     {
     }
     void Bank::makeAccount(){
-        //후에 인터페이스로 옮길 예정
+
     }
-    void Bank::setBankName(std::string inBankName){
+    void Bank::setBankName(string inBankName){
         mBankName = inBankName;
     }
-    std::string Bank::getBankName(){
+    string Bank::getBankName(){
         return mBankName;
     }
-    Card& Bank::addUserCard(std::string inIdentificationNum, std::string inPassword, bool inIsAdmin){
+    void Bank::addUserCard(Card& inNewCard){
+        mUserCards.push_back(inNewCard);
+    }
+
+    Card& Bank::addUserCard(string inIdentificationNum, string inPassword, bool inIsAdmin){
         Card theCard;
         theCard.setIdenficationNum(inIdentificationNum);
         theCard.setPassword(inPassword);
@@ -26,13 +30,23 @@ namespace Records{
         mUserCards.push_back(theCard);
         return mUserCards[mUserCards.size()-1];
     }
-    Card& Bank::getCard(std::string inIdentificationNum){
+    Card& Bank::getCard(string inIdentificationNum){
         for (auto iter = mUserCards.begin();
                 iter != mUserCards.end(); ++iter){
-                    if (iter->getIdentificationNum() == inIdentificationNum)
+                    if (iter->getIdentificationNum() == inIdentificationNum){
                         return *iter;
+                    }
                 }
-        cerr << "No card with ID " << inIdentificationNum << endl;
+        cerr << "No card with that ID" << endl;
         throw exception();
+    }
+    Account& Bank::addAccount(string inUserName, string inAccountNumber, int inAvailableMoney){
+        Account theAccount;
+        theAccount.setBankName(mBankName);
+        theAccount.setUserName(inUserName);
+        theAccount.setAccountNumber(inAccountNumber);
+        theAccount.addMoney(inAvailableMoney);
+        mAccounts.push_back(theAccount);
+        return mAccounts[mAccounts.size()-1];
     }
 }

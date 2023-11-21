@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 namespace Records{
@@ -16,7 +17,6 @@ namespace Records{
             std::string mIssuingBank;
             std::string mIdentificationNum;
             std::string mPassword;
-
             bool isAdmin;
     };
 }

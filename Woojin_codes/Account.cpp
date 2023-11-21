@@ -9,9 +9,6 @@ namespace Records{
         , mAvailableMoney(0)
     {
     }
-    Account::~Account()
-    {
-    }
 
     Transaction& Account::addTransaction(string inBankName, string inCardNum, int inTransType, int inAmountOfMoney)
     {
