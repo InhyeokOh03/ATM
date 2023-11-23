@@ -38,6 +38,9 @@ namespace Records{
     int CentralDB::generateSerialNum(int inBanknum, int inATMnum){
         return (100000*inBanknum + inATMnum);
     }
+    int CentralDB::generateCardNum(int inBanknum, int inCardnum){
+        return (10000000*inBanknum + inCardnum);
+    }
     
     void CentralDB::displayATM() const{
         cout << "ATM list" << endl;
@@ -59,6 +62,14 @@ namespace Records{
         cout << "-------------------" << endl;
         for (auto iter = mBanks.begin(); iter != mBanks.end(); iter++){
             iter->display();
+        }
+    }
+    void CentralDB::displayCard() const{
+        cout << "Card list" << endl;
+
+        for (auto iter = mBanks.begin(); iter != mBanks.end(); iter++){
+            cout << "-------------------" << endl;
+            iter->displayCards();
         }
     }
     void CentralDB::displayAll() const{

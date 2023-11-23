@@ -9,6 +9,7 @@ namespace Records{
     : mBankName("")
     , mBankUniqueNum(-1)
     , mATMCounter(0)
+    , mCardCounter(0)
     {
     }
     void Bank::makeAccount(){
@@ -30,7 +31,7 @@ namespace Records{
         mUserCards.push_back(inNewCard);
     }
 
-    Card& Bank::addUserCard(string inIdentificationNum, string inPassword, bool inIsAdmin){
+    Card& Bank::addUserCard(int inIdentificationNum, string inPassword, bool inIsAdmin){
         Card theCard;
         theCard.setIdenficationNum(inIdentificationNum);
         theCard.setPassword(inPassword);
@@ -38,7 +39,7 @@ namespace Records{
         mUserCards.push_back(theCard);
         return mUserCards[mUserCards.size()-1];
     }
-    Card& Bank::getCard(string inIdentificationNum){
+    Card& Bank::getCard(int inIdentificationNum){
         for (auto iter = mUserCards.begin();
                 iter != mUserCards.end(); ++iter){
                     if (iter->getIdentificationNum() == inIdentificationNum){
@@ -60,8 +61,18 @@ namespace Records{
     int Bank::getATMCounter(){
         return ++mATMCounter;
     }
+    int Bank::getCardCounter(){
+        return ++mCardCounter;
+    }
 
     void Bank::display() const{
         cout << mBankUniqueNum << ") " << mBankName << endl;
+    }
+    void Bank::displayCards() const{
+        cout << mBankName << " Card List" << endl;
+        cout << "-------------------------" << endl;
+        for (auto iter = mUserCards.begin(); iter != mUserCards.end(); iter++){
+            iter->display();
+        }
     }
 }

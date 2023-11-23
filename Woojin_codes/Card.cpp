@@ -1,10 +1,11 @@
+#include <iostream>
 #include "Card.h"
 using namespace std;
 
 namespace Records{
     Card::Card()
     : mIssuingBank("")
-    , mIdentificationNum("")
+    , mIdentificationNum(-1)
     , mPassword("")
     , isAdmin(false)
     {
@@ -15,10 +16,10 @@ namespace Records{
     string Card::getIssuingBank(){
         return mIssuingBank;
     }
-    void Card::setIdenficationNum(std::string inIdentificationNum){
+    void Card::setIdenficationNum(int inIdentificationNum){
         mIdentificationNum = inIdentificationNum;
     }
-    std::string Card::getIdentificationNum(){
+    int Card::getIdentificationNum(){
         return mIdentificationNum;
     }
     void Card::setPassword(string inPassword){
@@ -29,5 +30,10 @@ namespace Records{
     }
     void Card::setAdmin(){
         isAdmin = true;
+    }
+    void Card::display() const{
+        cout << "Bank Name: " << mIssuingBank << endl;
+        cout << "Card ID: " << mIdentificationNum << endl;
+        cout << "Card PW: " << mPassword << endl;
     }
 }

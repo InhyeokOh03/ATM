@@ -15,12 +15,14 @@ namespace Records{
             void setBankUniqueNum(int inBankUniqueNum);
             int getBankUniqueNum();
             void addUserCard(Card& inNewCard);
-            Card& addUserCard(std::string inIdentificationNum, std::string inPassword, bool inIsAdmin);
-            Card& getCard(std::string inIdentificationNum);
+            Card& addUserCard(int inIdentificationNum, std::string inPassword, bool inIsAdmin);
+            Card& getCard(int inIdentificationNum);
             Account& addAccount(std::string inUserName, std::string inAccountNumber, int inAvailableMoney);
             int getATMCounter();
+            int getCardCounter();
 
             void display() const;
+            void displayCards() const;
 
 
         protected:
@@ -29,5 +31,6 @@ namespace Records{
             std::vector<Card> mUserCards;
             std::vector<Account> mAccounts;
             int mATMCounter;
+            int mCardCounter;
     };
 }

@@ -8,14 +8,15 @@ namespace Records{
             Card();
             void setIssuingBank(std::string inIssuingBank);
             std::string getIssuingBank();
-            void setIdenficationNum(std::string inIdentificationNum);
-            std::string getIdentificationNum();
+            void setIdenficationNum(int inIdentificationNum);
+            int getIdentificationNum();
             void setPassword(std::string inPassword);
             std::string getPassword();
             void setAdmin();
+            void display() const;
         protected:
             std::string mIssuingBank;
-            std::string mIdentificationNum;
+            int mIdentificationNum;
             std::string mPassword;
             bool isAdmin;
     };

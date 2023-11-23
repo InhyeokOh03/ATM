@@ -11,9 +11,11 @@ namespace Records{
             void addAccount(Account& inNewAccount);
             Bank& addBank(std::string inBankName);
             int generateSerialNum(int inBanknum, int inATMnum);
+            int generateCardNum(int inBanknum, int inCardnum);
             void displayATM() const;
             void displayAccount() const;
             void displayBank() const;
+            void displayCard() const;
             void displayAll() const;
             bool IsinBank(std::string inBankName);
             Bank& getBank(std::string inBankName);

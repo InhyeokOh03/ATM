@@ -7,6 +7,7 @@ using namespace std;
 using namespace Records;
 int displayDBMenu();
 void makeATM(CentralDB& inDB);
+void makeCard(CentralDB& inDB);
 
 int main(){
     CentralDB DB;
@@ -23,13 +24,17 @@ int main(){
             makeATM(DB);
             break;
         case 2:
-            cout << "This will be added. Comming Soon" << endl;
+            cout << endl;
+            makeCard(DB);
             break;
         case 10:
             DB.displayATM();
             break;
         case 11:
             DB.displayAccount();
+            break;
+        case 12:
+            DB.displayCard();
             break;
         case 0:
             done = true;
@@ -46,9 +51,11 @@ int displayDBMenu(){
     cout << "Central Database" << endl;
     cout << "----------------" << endl;
     cout << "1) Make New ATM" << endl;
-    cout << "2) Coming soon" << endl;
+    cout << "2) Make New Card" << endl;
+    cout << "3) Coming soon" << endl;
     cout << "10) Display all ATMs" << endl;
     cout << "11) Display all Accounts"  << endl;
+    cout << "12) Display all Cards" << endl;
     cout << "0) Quit" << endl;
     cout << endl;
     cout << "===>";
@@ -121,5 +128,56 @@ void makeATM(CentralDB& inDB){
 }
 
 void makeCard(CentralDB& inDB){
+    int banknum;
+    inDB.displayBank();
+    cout << "Choose number of bank ";
+    cin >> banknum;
+    int cardnum;
+    try {
+        cardnum = inDB.generateCardNum(inDB.getBank(banknum).getBankUniqueNum() ,inDB.getBank(banknum).getCardCounter());
+    } catch (exception&){
+        cout << "return to main..." << endl;
+        return;
+    }
 
+    string bankname = inDB.getBank(banknum).getBankName();
+
+    string password;
+    SETPASSWORD:
+    cout << "Set your password ";
+    cin >> password;
+    
+    if (password.length() < 6 || password.length() > 20){
+        cout << "Length of Your password should be between 6 and 20." << endl;
+        goto SETPASSWORD;
+    }
+    string repass;
+    cout << "Please Rewrite your password ";
+    cin >> repass;
+
+    if (password != repass){
+        cout << "Failed to Check your password." <<endl;
+        cout << "Password reset." <<endl;
+        cout << endl;
+        goto SETPASSWORD;
+    }
+    bool isAdmin = false;
+
+    if(password == "admin99"){
+        isAdmin = true;
+    }
+
+    cout << "Password Checked!" << endl;
+
+    inDB.getBank(banknum).addUserCard(cardnum, password, isAdmin);
+    //user가 카드를 소유하게 하려면, user 클래스에 카드 벡터를 만들고 거기에 추가할 수 있음.
+
+    cout << endl;
+    cout << "Your card successfully issued!" << endl;
+    cout << endl;
+    cout << "Information of Your card" << endl;
+    cout << "------------------------" << endl;
+    inDB.getBank(banknum).getCard(cardnum).display();
+    cout << endl;
+    cout << "Return to main..." << endl;
 }
