@@ -1,24 +1,19 @@
 #pragma once
 #include <string>
 
-namespace Records{
-    enum Ttype{CASHIN, CHECKIN, WITHDRAW, CASHTRANSFER, MONEYTRANSFER, TEMP = -1};
+namespace Records {
+    class Transaction {
+    public:
+        // 생성자
+        Transaction(int id, const std::string& cardID, int type, int amount);
+           
+        // 멤버 함수
+        void printTransaction() const;
 
-    class Transaction{
-        public:
-            Transaction();
-            void setTransactionID(int inTransactionID);
-            int getTransactionID();
-            void setCardNum(std::string inCardNum);
-            std::string getCardNum();
-            void setTransType(int inTypeNum);
-            int getTransType();
-            void setAmountOfMoney(int inMoney);
-            int getAmountOfMoney();
-        protected:
-            int mTransactionID;
-            std::string mCardNum;
-            enum Ttype mTransType;
-            int mAmountOfMoney;
+    protected:
+        int transactionID; // 트랜잭션 ID
+        std::string cardID; // 카드 ID
+        int transactionType; // 트랜잭션 타입
+        int transactionAmount; // 트랜잭션 금액
     };
 }
