@@ -7,6 +7,8 @@ namespace Records{
 
     Bank::Bank()
     : mBankName("")
+    , mBankUniqueNum(-1)
+    , mATMCounter(0)
     {
     }
     void Bank::makeAccount(){
@@ -17,6 +19,12 @@ namespace Records{
     }
     string Bank::getBankName(){
         return mBankName;
+    }
+    void Bank::setBankUniqueNum(int inBankUniqueNum){
+        mBankUniqueNum = inBankUniqueNum;
+    }
+    int Bank::getBankUniqueNum(){
+        return mBankUniqueNum;
     }
     void Bank::addUserCard(Card& inNewCard){
         mUserCards.push_back(inNewCard);
@@ -48,5 +56,12 @@ namespace Records{
         theAccount.addMoney(inAvailableMoney);
         mAccounts.push_back(theAccount);
         return mAccounts[mAccounts.size()-1];
+    }
+    int Bank::getATMCounter(){
+        return ++mATMCounter;
+    }
+
+    void Bank::display() const{
+        cout << mBankUniqueNum << ") " << mBankName << endl;
     }
 }

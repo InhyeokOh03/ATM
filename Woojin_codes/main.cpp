@@ -57,14 +57,21 @@ int displayDBMenu(){
 }
 
 void makeATM(CentralDB& inDB){
-    string bankname;
-    cout << "Name of bank? ";
-    cin >> bankname;
-    if(!inDB.IsinBank(bankname)){
-        cout << "Can't find Bank named [" << bankname << "]" << endl;
+
+    int banknum;
+    inDB.displayBank();
+    cout << "Choose number of bank ";
+    cin >> banknum;
+    int serialnum;
+    try {
+        serialnum = inDB.generateSerialNum(inDB.getBank(banknum).getBankUniqueNum() ,inDB.getBank(banknum).getATMCounter());
+    } catch (exception&){
+        cout << "return to main..." << endl;
         return;
     }
-    //6자리 시리얼 번호 랜덤 부여
+
+    string bankname = inDB.getBank(banknum).getBankName();
+   
     CASH cash;
     cout << "Num of 50,000? ";
     cin >> cash.numOf50000;
@@ -110,7 +117,9 @@ void makeATM(CentralDB& inDB){
         goto BICHECK;
     }
 
+    inDB.addATM(bankname, serialnum, cashamount, cash, isMulti, isBilingual);
+}
 
+void makeCard(CentralDB& inDB){
 
-    inDB.addATM(bankname, "123456", cashamount, cash, isMulti, isBilingual);
 }

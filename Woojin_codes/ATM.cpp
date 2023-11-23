@@ -6,7 +6,7 @@ namespace Records {
     ATM::ATM()
     : mBankName("")
     , isMulti(true)
-    , mSerialNumber("")
+    , mSerialNumber(-1)
     , mCashAmount(0)
     , isBilingual(false)
     {
@@ -54,10 +54,10 @@ namespace Records {
     bool ATM::IsMulti(){
         return isMulti;
     }
-    void ATM::setSerialNumber(string inSerialNumber){
+    void ATM::setSerialNumber(int inSerialNumber){
         mSerialNumber = inSerialNumber;
     }
-    string ATM::getSerialNumber(){
+    int ATM::getSerialNumber(){
         return mSerialNumber;
     }
     void ATM::setCashAmount(int inCashAmount){

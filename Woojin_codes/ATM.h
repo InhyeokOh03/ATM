@@ -30,8 +30,8 @@ namespace Records{
             std::string getBankName();
             void setIsMulti(bool inIsMulti);
             bool IsMulti();
-            void setSerialNumber(std::string inSerialNumber);
-            std::string getSerialNumber();
+            void setSerialNumber(int inSerialNumber);
+            int getSerialNumber();
             void setCashAmount(int inCashAmount);
             int getCashAmount();
             void setCashPossesion(CASH inCash);
@@ -45,7 +45,7 @@ namespace Records{
         protected:
             std::string mBankName;
             bool isMulti;
-            std::string mSerialNumber;
+            int mSerialNumber;
             int mCashAmount;
             CASH mCashPossesion;
             bool isBilingual;
