@@ -9,6 +9,10 @@ using namespace Records;
 int displayDBMenu();
 void makeATM(CentralDB& inDB);
 void makeCard(CentralDB& inDB);
+void displayAdminMode(CentralDB& inDB);
+int bankSelect();
+int ATMSelect();
+int input();
 
 int main() {
     CentralDB DB;
