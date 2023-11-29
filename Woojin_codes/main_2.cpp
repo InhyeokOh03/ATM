@@ -10,7 +10,7 @@ int displayDBMenu();
 void makeATM(CentralDB& inDB);
 void makeCard(CentralDB& inDB);
 void displayAdminMode(CentralDB& inDB);
-int bankSelect();
+int bankSelect(CentralDB& inDB);
 int ATMSelect();
 int input();
 
@@ -31,7 +31,12 @@ int main() {
             break;
         case 2: // Go to Bank Select
             cout << endl;
-            selection = bankSelect();
+            selection = bankSelect(DB);
+            break;
+        case 3: // Go to Bank Select
+            cout << endl;
+            selection = ATMSelect();
+            // selection에서 얻은 ATM으로 ATMUI 부터 진행.
             break;
         // case 10:
         //     DB.displayATM();
@@ -42,11 +47,11 @@ int main() {
         // case 12:
         //     DB.displayCard();
         //     break;
-        // case 0:
-        //     done = true;
-        //     break;
-        // default:
-        //     cerr << "Unknown command." << endl;
+        case 0:
+            done = true;
+            break;
+        default:
+            cerr << "Unknown command." << endl;
         }
     }
 }
@@ -78,8 +83,7 @@ void displayAdminMode(CentralDB& inDB) {
     cout << "1) Make New ATM" << endl;
     cout << "0) Back to ModeSelect" << endl;
     cout << endl;
-    cout << "===>";
-    cin >> selection;
+    selection = input();
     switch (selection) {
         case 1:
             cout<< endl;
@@ -97,7 +101,7 @@ void makeATM(CentralDB& inDB) {
     int banknum;
     inDB.displayBank();
     cout << "Choose number of bank ";
-    cin >> banknum;
+    banknum = input();
     int serialnum;
     try {
         serialnum = inDB.generateSerialNum(inDB.getBank(banknum).getBankUniqueNum() ,inDB.getBank(banknum).getATMCounter());
@@ -115,13 +119,13 @@ void makeATM(CentralDB& inDB) {
 
 
     cout << "Num of 50,000? ";
-    cin >> num50000;
+    num50000 = input();
     cout << "Num of 10,000? ";
-    cin >> num10000;
+    num10000 = input();
     cout << "Num of 5,000? ";
-    cin >> num5000;
+    num5000 = input();
     cout << "Num of 1,000? ";
-    cin >> num1000;
+    num1000 = input();
 
     CASH cash(num1000, num5000, num10000, num50000);
 
@@ -134,7 +138,7 @@ void makeATM(CentralDB& inDB) {
     cout << "1) Single Bank ATM" << endl;
     cout << "2) Multi Bank ATM" << endl;
     MULTICHECK:
-    cin >> isMul;
+    isMul = input();
     if (isMul == 1){
         isMulti = false;
     } else if (isMul == 2){
@@ -150,7 +154,7 @@ void makeATM(CentralDB& inDB) {
     cout << "1) Bilingual" << endl;
     cout << "2) Monolingual" << endl;
     BICHECK:
-    cin >> isBi;
+    isBi = input();
     if (isBi == 1){
         isBilingual = true;
     } else if (isBi == 2) {
@@ -163,7 +167,7 @@ void makeATM(CentralDB& inDB) {
     inDB.addATM(bankname, to_string(serialnum), cash, isMulti, isBilingual);
 }
 
-int bankSelect() {
+int bankSelect(CentralDB& inDB) {
     // 은행 추가 기능 구현 필요
     int selection;
     cout << endl;
@@ -175,8 +179,19 @@ int bankSelect() {
 
     cout << "0) Back to mode select" << endl;
     cout << endl;
-    cout << "===>";
-    cin >> selection;
+    selection = input();
+    switch (selection) {
+        // make account -> make card
+
+        // case 1:
+        //     cout<< endl;
+        //     break;
+        // case 0:
+        //     cout<< endl;
+        //     break;
+        default:
+            cerr << "Unknown command." << endl;
+    }
     return selection;
 }
 
@@ -186,14 +201,14 @@ int ATMSelect() {
     cout << endl;
     cout << "Central Database" << endl;
     cout << "----------------" << endl;
-    cout << "1) Go to AdminMode" << endl;
-    cout << "2) Go to BankSelect" << endl;
-    cout << "3) Go to ATMSelect" << endl;
+    // cout << "1) Go to AdminMode" << endl;
+    // cout << "2) Go to BankSelect" << endl;
+    // cout << "3) " << endl;
 
+    // ATM 종류 출력 후 무슨 ATM을 골랐는지 정수로 반환.
     cout << "0) Quit" << endl;
     cout << endl;
-    cout << "===>";
-    cin >> selection;
+    selection = input();
     return selection;
 }
 
@@ -204,7 +219,7 @@ int input() {
     cin >> selection;
 
     if (selection == "x") {
-        //정보 출력
+        cout << "x is inputted" << endl;
     } else {
         return stoi(selection);
     }
