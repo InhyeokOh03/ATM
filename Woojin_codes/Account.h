@@ -7,8 +7,8 @@ namespace Records{
 
     class Account{
         public:
-            Account();
-            Transaction& addTransaction(std::string inBankName, std::string inCardNum, int inTransType, int inAmountOfMoney);
+            Account(std::string inAccountHolderID, std::string inBankName, std::string );
+            Transaction addTransaction(std::string inBankName, std::string inCardNum, int inTransType, int inAmountOfMoney);
             void setBankName(std::string inBankName);
             std::string getBankName();
             void setUserName(std::string inUserName);
@@ -23,7 +23,7 @@ namespace Records{
 
         protected:
             std::string mBankName;
-            std::string mUserName;
+            std::string mUsername;
             std::string mAccountNumber;
             int mAvailableMoney;
             std::vector<Transaction> mTransactions;
