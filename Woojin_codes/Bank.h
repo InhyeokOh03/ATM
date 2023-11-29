@@ -6,11 +6,11 @@
 #include "Atm.h"
 #include "User.h"
 namespace Records{
-	struct AccountInfo{
+	typedef struct AccountInfo{
 		std::string accountID;
 		std::string password;
-		Account& account;
-	}; 
+	}ACCOUNTINFO;
+    
     class Bank{
         public:
             Bank();
@@ -32,11 +32,11 @@ namespace Records{
 
 
         protected:
-        	static int mStaticBankCounter 
+        	static int mStaticBankCounter;
             std::string mBankName;
-            int mBankID
+            int mBankID;
             int mBankUniqueNum;
-            std::vector<Atm> mAtmList;
+            std::vector<ATM> mAtmList;
             std::vector<Card> mUserCards;
             std::vector<Account> mAccounts;
             int mATMCounter;
