@@ -11,15 +11,14 @@ namespace Records{
     int CentralDB::static_bank_counter = 0;
     
     CentralDB::CentralDB(){}
-    ATM& CentralDB::addATM(string inBankName, int inSerialNumber, int inCashAmount, CASH inCashPossesion, bool ismul, bool isBi)
+    ATM& CentralDB::addATM(string inBankName, string inSerialNumber, CASH inCashPossesion, bool ismul, bool isBi)
     {
         ATM theATM;
         theATM.setBankName(inBankName);
         theATM.setSerialNumber(inSerialNumber);
-        theATM.setCashAmount(inCashAmount);
         theATM.setCashPossesion(inCashPossesion);
-        theATM.setIsMulti(ismul);
-        theATM.setIsBilingual(isBi);
+        theATM.setToMulti(ismul);
+        theATM.setToBilingual(isBi);
         mATMs.push_back(theATM);
         return mATMs[mATMs.size()-1];
     }
@@ -42,7 +41,7 @@ namespace Records{
         return (10000000*inBanknum + inCardnum);
     }
     
-    void CentralDB::displayATM() const{
+    void CentralDB::displayATM(){
         cout << "ATM list" << endl;
         cout << "-------------------" << endl;
         for (auto iter = mATMs.begin(); iter != mATMs.end(); iter++){

@@ -7,10 +7,11 @@ namespace Records {
     class userCard : public Card {
     public:
         // 생성자
-        userCard(const std::string& cardID, const std::string& bankName);
+        userCard(std::string cardID, std::string bankName);
 
     protected:
         // 관리자 카드는 isAdmin이 항상 true
+        std::string cardID;
         std::string bankName;
     };
 }

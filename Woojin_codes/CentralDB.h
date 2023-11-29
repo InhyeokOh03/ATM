@@ -7,12 +7,12 @@ namespace Records{
     class CentralDB{
         public:
             CentralDB();
-            ATM& addATM(std::string inBankName, int inSerialNumber, int inCashAmount, CASH inCashPossesion, bool ismul, bool isBi);
+            ATM& addATM(std::string inBankName, std::string inSerialNumber, CASH inCashPossesion, bool ismul, bool isBi);
             void addAccount(Account& inNewAccount);
             Bank& addBank(std::string inBankName);
             int generateSerialNum(int inBanknum, int inATMnum);
             int generateCardNum(int inBanknum, int inCardnum);
-            void displayATM() const;
+            void displayATM();
             void displayAccount() const;
             void displayBank() const;
             void displayCard() const;

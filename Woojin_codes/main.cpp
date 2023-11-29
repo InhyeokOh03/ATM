@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include "CentralDB.h"
+
 using namespace std;
 using namespace Records;
 int displayDBMenu();
@@ -50,7 +51,7 @@ int modeSelect() {
     cout << endl;
     cout << "Select the mode" << endl;
     cout << "----------------" << endl;
-    cout << "1) KakaoBank" << endl;
+    cout << "1) Admin Mode" << endl;
     cout << "2) ATM select" << endl;
     cout << "3) Bank select" << endl;
     cout << "0) Quit" << endl;
@@ -69,7 +70,7 @@ int bankSelect() {
     cout << endl;
     cout << "Select the mode" << endl;
     cout << "----------------" << endl;
-    cout << "1) Admin Mode" << endl;
+    cout << "1) KakaoBank" << endl;
     cout << "2) ShinhanBank" << endl;
     cout << "3) TossBank" << endl;
     cout << "0) Back to mode select" << endl;
@@ -113,17 +114,24 @@ void makeATM(CentralDB& inDB){
 
     string bankname = inDB.getBank(banknum).getBankName();
 
-    CASH cash;
-    cout << "Num of 50,000? ";
-    cin >> cash.numOf50000;
-    cout << "Num of 10,000? ";
-    cin >> cash.numOf10000;
-    cout << "Num of 5,000? ";
-    cin >> cash.numOf5000;
-    cout << "Num of 1,000? ";
-    cin >> cash.numOf1000;
+    int num50000;
+    int num10000;
+    int num5000;
+    int num1000;
 
-    int cashamount = cash.numOf50000 * 50000 + cash.numOf10000 * 10000 + cash.numOf5000 * 5000 + cash.numOf1000 * 1000;
+
+    cout << "Num of 50,000? ";
+    cin >> num50000;
+    cout << "Num of 10,000? ";
+    cin >> num10000;
+    cout << "Num of 5,000? ";
+    cin >> num5000;
+    cout << "Num of 1,000? ";
+    cin >> num1000;
+
+    CASH cash(num1000, num5000, num10000, num50000);
+
+    int cashamount = cash.getTotalAmountOfMoney();
 
     int isMul;
     bool isMulti;
@@ -158,7 +166,7 @@ void makeATM(CentralDB& inDB){
         goto BICHECK;
     }
 
-    inDB.addATM(bankname, serialnum, cashamount, cash, isMulti, isBilingual);
+    inDB.addATM(bankname, to_string(serialnum), cash, isMulti, isBilingual);
 }
 
 void makeCard(CentralDB& inDB){
@@ -203,7 +211,7 @@ void makeCard(CentralDB& inDB){
 
     cout << "Password Checked!" << endl;
 
-    inDB.getBank(banknum).addUserCard(cardnum, password, isAdmin);
+    inDB.getBank(banknum).addUserCard(to_string(cardnum), password, isAdmin);
     //user가 카드를 소유하게 하려면, user 클래스에 카드 벡터를 만들고 거기에 추가할 수 있음.
 
     cout << endl;
@@ -211,7 +219,7 @@ void makeCard(CentralDB& inDB){
     cout << endl;
     cout << "Information of Your card" << endl;
     cout << "------------------------" << endl;
-    inDB.getBank(banknum).getCard(cardnum).display();
+    inDB.getBank(banknum).getCard(to_string(cardnum)).display();
     cout << endl;
     cout << "Return to main..." << endl;
 }

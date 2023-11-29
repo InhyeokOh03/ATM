@@ -11,10 +11,10 @@ namespace Records{
     , mCardCounter(0)
     {
     }
-    void Bank::makeAccount(User user){
-		Account newaccount(user);
-		mAccounts.push_back(newaccount);
-    }
+    // void Bank::makeAccount(User user){
+	// 	Account newaccount(user);
+	// 	mAccounts.push_back(newaccount);
+    // }
     void Bank::setBankName(string inBankName){
         mBankName = inBankName;
     }
@@ -31,18 +31,18 @@ namespace Records{
         mUserCards.push_back(inNewCard);
     }
 
-    Card& Bank::addUserCard(int inIdentificationNum, string inPassword, bool inIsAdmin){
+    Card& Bank::addUserCard(string inID, string inPassword, bool inIsAdmin){
         Card theCard;
-        theCard.setIdenficationNum(inIdentificationNum);
+        theCard.setCardId(inID);
         theCard.setPassword(inPassword);
         theCard.setIssuingBank(mBankName);
         mUserCards.push_back(theCard);
         return mUserCards[mUserCards.size()-1];
     }
-    Card& Bank::getCard(int inIdentificationNum){
+    Card& Bank::getCard(string inIdentificationNum){
         for (auto iter = mUserCards.begin();
                 iter != mUserCards.end(); ++iter){
-                    if (iter->getIdentificationNum() == inIdentificationNum){
+                    if (iter->getCardID() == inIdentificationNum){
                         return *iter;
                     }
                 }
@@ -56,10 +56,9 @@ namespace Records{
         theAccount.setAccountNumber(inAccountNumber);
         theAccount.addMoney(inAvailableMoney);
         mAccounts.push_back(theAccount);
-        struct AccountInfo info;
+        ACCOUNTINFO info;
         info.accountID = inAccountNumber;
         info.password = inPassword;
-        info.account = theAccount;
         AccountInfoList.push_back(info);
         return mAccounts[mAccounts.size()-1];
     }
@@ -81,16 +80,26 @@ namespace Records{
         }
     }
     bool Bank::tryLogin(std::string ID, std::string pw) const{
-    	for(int i = 0; i< mAccounts.size(), i++):
-    		if ID == AccountInfoList[i].accountID:
-    			if pw == AccountInfoList[i].password:
+    	for(int i = 0; i< mAccounts.size(); i++){
+    		if (ID == AccountInfoList[i].accountID){
+    			if (pw == AccountInfoList[i].password){
     				return true;
-    			else:
+                } else {
     				return false;
-    		return false;
-	}
-	Account& Bank::getAccount(std::string accountID):
-		for(int i = 0; i < mAccounts.size(),i++):
-			if mAccounts[i].mAccountNumber == accountID:
-				return Account;
+                }
+            }
+        }
+    	return false;   
+    }
+	Account& Bank::getAccount(std::string accountID){
+		for (auto iter = mAccounts.begin(); iter != mAccounts.end(); ++iter){
+            if (iter->getAccountNumber() == accountID){
+                return *iter;
+            }
+        }
+
+        cerr << "No Account with that ID" << endl;
+        throw exception();
+    }
+
 }

@@ -20,8 +20,8 @@ namespace Records{
             void setBankUniqueNum(int inBankUniqueNum);
             int getBankUniqueNum();
             void addUserCard(Card& inNewCard);
-            Card& addUserCard(int inIdentificationNum, std::string inPassword, bool inIsAdmin);
-            Card& getCard(int inIdentificationNum);
+            Card& addUserCard(std::string inIdentificationNum, std::string inPassword, bool inIsAdmin);
+            Card& getCard(std::string inIdentificationNum);
             Account& addAccount(std::string inUserName, std::string inAccountNumber, std::string inPassword, int inAvailableMoney);
             int getATMCounter();
             int getCardCounter();
