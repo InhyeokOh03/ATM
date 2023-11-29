@@ -5,10 +5,14 @@ namespace Records {
     class Transaction {
     public:
         // 생성자
+        Transaction();
         Transaction(int id, const std::string& cardID, int type, int amount);
            
         // 멤버 함수
         void printTransaction() const;
+        void setCardNum(const std::string& cardID);
+        void setTransType(int type);
+        void setAmountOfMoney(int amout);
 
     protected:
         int transactionID; // 트랜잭션 ID

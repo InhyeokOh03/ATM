@@ -1,15 +1,17 @@
-#pragma once
+#ifndef USERCARD_H
+#define USERCARD_H
 #include "Card.h"
 
 namespace Records {
     // adminCard 클래스 선언 (Card 클래스를 상속받음)
-    class adminCard : public Card {
+    class userCard : public Card {
     public:
         // 생성자
-        adminCard(const std::string& cardID);
+        userCard(const std::string& cardID, const std::string& bankName);
 
     protected:
         // 관리자 카드는 isAdmin이 항상 true
-        static const bool isAdmin = true;
+        std::string bankName;
     };
 }
+#endif // USERCARD_H

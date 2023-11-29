@@ -2,7 +2,7 @@
 
 namespace Records {
 
-    User(const std::string& name) : username(name) {}
+    User::User(const std::string& name) : username(name) {}
 
     // 카드를 추가하는 메서드 구현
     void User::addCard(Card* newCard) {

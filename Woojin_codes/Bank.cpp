@@ -33,7 +33,7 @@ namespace Records{
 
     Card& Bank::addUserCard(int inIdentificationNum, string inPassword, bool inIsAdmin){
         Card theCard;
-        theCard.setIdenficationNum(inIdentificationNum);
+        theCard.setIdentificationNum(std::to_string(inIdentificationNum));
         theCard.setPassword(inPassword);
         theCard.setIssuingBank(mBankName);
         mUserCards.push_back(theCard);
@@ -42,7 +42,7 @@ namespace Records{
     Card& Bank::getCard(int inIdentificationNum){
         for (auto iter = mUserCards.begin();
                 iter != mUserCards.end(); ++iter){
-                    if (iter->getIdentificationNum() == inIdentificationNum){
+                    if (iter->getIdentificationNum() == std::to_string(inIdentificationNum)){
                         return *iter;
                     }
                 }

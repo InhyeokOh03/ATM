@@ -50,10 +50,29 @@ int modeSelect() {
     cout << endl;
     cout << "Select the mode" << endl;
     cout << "----------------" << endl;
-    cout << "1) Admin Mode" << endl;
+    cout << "1) KakaoBank" << endl;
     cout << "2) ATM select" << endl;
     cout << "3) Bank select" << endl;
     cout << "0) Quit" << endl;
+    cout << endl;
+    cout << "===>";
+    cin >> selection;
+    return selection;
+}
+
+int ATMSelect() {
+    return 0;
+}
+
+int bankSelect() {
+    int selection;
+    cout << endl;
+    cout << "Select the mode" << endl;
+    cout << "----------------" << endl;
+    cout << "1) Admin Mode" << endl;
+    cout << "2) ShinhanBank" << endl;
+    cout << "3) TossBank" << endl;
+    cout << "0) Back to mode select" << endl;
     cout << endl;
     cout << "===>";
     cin >> selection;

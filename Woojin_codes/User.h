@@ -1,10 +1,13 @@
 #pragma once
+#include "Card.h"
+
 #include <string>
+#include <vector>
 
 namespace Records { 
     class User {
         public:
-            User(const std::string& name) : username(name);
+            User(const std::string& name);
 
             // 멤버 함수
             void addCard(Card* newCard);
