@@ -142,6 +142,8 @@ void bankMode(CentralDB& inDB){
 }
 
 void ATMMode(CentralDB& inDB){
+    // select language
+    // need Korean patch.
     int SerialNum = ATMSelect(inDB);
     string SerialNumber = to_string(SerialNum);
     ATM tempATM = inDB.getATM(SerialNumber);
@@ -221,6 +223,20 @@ int ATMMenu(string inBankName){
     cout << "2) Withdraw" << endl;
     cout << "3) Send" << endl;
     cout << "0) Quit" << endl;
+    cout << "===>";
+    selection = input();
+    return selection;
+}
+
+int ATMMenu_kor(string inBankName){
+    int selection;
+    cout << endl;
+    cout << inBankName << " 현금 자동 입출금기" << endl;
+    cout << "-------------------------" << endl;
+    cout << "1) 입금" << endl;
+    cout << "2) 출금" << endl;
+    cout << "3) 송금" << endl;
+    cout << "0) 종료" << endl;
     cout << "===>";
     selection = input();
     return selection;
@@ -364,6 +380,20 @@ int bankSelect(CentralDB& inDB) {
     return selection;
 }
 
+int bankSelect_kor(CentralDB& inDB) {
+    int selection;
+    cout << endl;
+    cout << "은행을 선택해 주세요." << endl;
+    cout << "----------------" << endl;
+    inDB.displayBank();
+
+    cout << "0) 뒤로가기" << endl;
+    cout << endl;
+    cout << "===>";
+    selection = input();
+    return selection;
+}
+
 int ATMSelect(CentralDB& inDB) {
     int selection;
     cout << endl;
@@ -372,6 +402,20 @@ int ATMSelect(CentralDB& inDB) {
     inDB.displayATMforUser();
 
     cout << "0) Quit" << endl;
+    cout << endl;
+    cout << "===>";
+    selection = input();
+    return selection;
+}
+
+int ATMSelect_kor(CentralDB& inDB) {
+    int selection;
+    cout << endl;
+    cout << "기기의 시리얼 넘버를 입력해 주세요." << endl;
+    cout << "----------------" << endl;
+    inDB.displayATMforUser();
+
+    cout << "0) 그만두기" << endl;
     cout << endl;
     cout << "===>";
     selection = input();
@@ -484,9 +528,114 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
 
         cout << "Your Check successfully deposited to your account." << endl;
     }
+}
 
-    
+void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
 
+    cout << "현금 혹은 수표를 선택해 주세요." << endl;
+    cout << "1) 현금" << endl;
+    cout << "2) 수표" << endl;
+    cout << endl;
+    string transID = to_string(inDB.generateTransNum());
+    int selection = input();
+
+    if (selection == 1){
+        int num50000;
+        int num10000;
+        int num5000;
+        int num1000;
+        CASHINSERT:
+        cout << "Num of 50,000? ";
+        num50000 = input();
+        cout << "Num of 10,000? ";
+        num10000 = input();
+        cout << "Num of 5,000? ";
+        num5000 = input();
+        cout << "Num of 1,000? ";
+        num1000 = input();
+
+        if (num1000 + num5000 + num10000 + num50000 > 50){
+            cout << "You can't deposit more than 50 pieces of cash at one time." << endl;
+            cout << "Please reinsert cash" << endl;
+            goto CASHINSERT;
+        }
+
+        CASH inCash(num1000, num5000, num10000, num50000);
+
+        inATM.setCashPossesion(inATM.getCashPossesion() + inCash);
+
+        if (inAccount.getBankName() != inATM.getBankName()){
+            cout << "You have to charge deposit fee for non-primary bank." << endl;
+            cout << "Deposit fee: KRW " << DEPOSIT_FEE_NONPRIMARY << endl;
+            cout << endl;
+            DEPOSITFEE1:
+            cout << "1) Charge deposit fee" << endl;
+            cout << "0) Cancel deposit" << endl;
+
+            int press = input();
+            if (press == 1){
+                inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney()+1000);
+                inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney()+1000);
+            } else if (press == 0){
+                return;
+            } else {
+                cout << "invalid command" << endl << endl;
+                goto DEPOSITFEE1;
+            }
+        } else{
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney());
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney());
+        }
+
+        cout << "Your cash successfully deposited to your account" << endl;
+
+
+
+    } else if (selection == 2){
+        CHECKINSERT:
+        cout << "How much would you like to put in a check?" <<endl;
+        cout << "===>";
+        int checkamount = input();
+
+        if (checkamount < 100000){
+            cout << "Error: Invalid Check" << endl;
+            cout << "Please reinsert the check" << endl;
+            goto CHECKINSERT;
+        }
+
+        inAccount.addMoney(checkamount);
+
+        
+
+        
+        cout << endl;
+        
+        if (inAccount.getBankName() != inATM.getBankName()){
+            cout << "You have to charge deposit fee for non-primary bank." << endl;
+            cout << "Deposit fee: KRW " << DEPOSIT_FEE_NONPRIMARY << endl;
+            cout << endl;
+            DEPOSITFEE2:
+            cout << "1) Charge deposit fee" << endl;
+            cout << "0) Cancel deposit" << endl;
+
+            int press = input();
+            if (press == 1){
+                inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
+                inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
+            } else if (press == 0){
+                return;
+            } else {
+                cout << "invalid command" << endl << endl;
+                goto DEPOSITFEE2;
+            }
+        }else{
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount);
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount);
+        }
+
+
+        cout << "Your Check successfully deposited to your account." << endl;
+    }
 }
 
 void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
