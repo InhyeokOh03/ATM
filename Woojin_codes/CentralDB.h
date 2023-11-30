@@ -12,7 +12,9 @@ namespace Records{
             Bank& addBank(std::string inBankName);
             int generateSerialNum(int inBanknum, int inATMnum);
             int generateCardNum(int inBanknum, int inCardnum);
+            int generateTransNum();
             void displayATM();
+            void displayATMforUser();
             void displayAccount() const;
             void displayBank() const;
             void displayCard() const;
@@ -20,11 +22,14 @@ namespace Records{
             bool IsinBank(std::string inBankName);
             Bank& getBank(std::string inBankName);
             Bank& getBank(int inBankNum);
+            ATM& getATM(std::string inSerialNum);
+
 
         protected:
             std::vector<ATM> mATMs;
             std::vector<Account> mAccounts;
             std::vector<Bank> mBanks;
             static int static_bank_counter;
+            static int static_trans_counter;
     };
 }

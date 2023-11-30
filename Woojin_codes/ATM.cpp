@@ -23,8 +23,9 @@ namespace Records{
     {
     }
 
-    Transaction& ATM::addCurrTransaction(int inId, const std::string& inCardID, int inType, int inAmount){
+    Transaction& ATM::addCurrTransaction(string inId, string inCardID, int inType, int inAmount){
         Transaction theTransaction;
+        theTransaction.setTransactionID(inId);
         theTransaction.setCardNum(inCardID);
         theTransaction.setTransType(inType);
         theTransaction.setAmountOfMoney(inAmount);
@@ -32,8 +33,9 @@ namespace Records{
         return currTransaction[currTransaction.size()-1];
     }
 
-    Transaction& ATM::addLifetimeTransaction(int inId, const std::string& inCardID, int inType, int inAmount){
+    Transaction& ATM::addLifetimeTransaction(string inId, string inCardID, int inType, int inAmount){
         Transaction theTransaction;
+        theTransaction.setTransactionID(inId);
         theTransaction.setCardNum(inCardID);
         theTransaction.setTransType(inType);
         theTransaction.setAmountOfMoney(inAmount);
@@ -74,6 +76,10 @@ namespace Records{
 
     void ATM::display(){
         cout << "ATM [SN: " << mSerialNum << "] 남은 현금: " <<  mCurrCash.getTotalAmountOfMoney() << endl;
+    }
+
+    void ATM::displayforuser(){
+        cout << "[ATM] [SN: " << mSerialNum << "] 관리 은행: " << mBankName << endl;
     }
 
 }

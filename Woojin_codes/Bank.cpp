@@ -79,6 +79,13 @@ namespace Records{
             iter->display();
         }
     }
+    void Bank::displayAccounts() const{
+        cout << mBankName << " Account List" << endl;
+        cout << "-------------------------" << endl;
+        for (auto iter = mAccounts.begin(); iter != mAccounts.end(); iter++){
+            iter->display();
+        }
+    }
     bool Bank::tryLogin(std::string ID, std::string pw) const{
     	for(int i = 0; i< mAccounts.size(); i++){
     		if (ID == AccountInfoList[i].accountID){
@@ -91,6 +98,7 @@ namespace Records{
         }
     	return false;   
     }
+    
 	Account& Bank::getAccount(std::string accountID){
 		for (auto iter = mAccounts.begin(); iter != mAccounts.end(); ++iter){
             if (iter->getAccountNumber() == accountID){

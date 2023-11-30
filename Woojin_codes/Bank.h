@@ -14,7 +14,6 @@ namespace Records{
     class Bank{
         public:
             Bank();
-            void makeAccount();
             void setBankName(std::string inBankName);
             std::string getBankName();
             void setBankUniqueNum(int inBankUniqueNum);
@@ -29,6 +28,7 @@ namespace Records{
             Account& getAccount(std::string accountID);
             void display() const;
             void displayCards() const;
+            void displayAccounts() const;
 
 
         protected:

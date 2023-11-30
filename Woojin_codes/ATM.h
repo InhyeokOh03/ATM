@@ -12,8 +12,8 @@ namespace Records{
             void printCurrTransaction() const;
             void printLifetimeTransaction() const;
             void makeTXTFile();
-            Transaction& addCurrTransaction(int inId, const std::string& inCardID, int inType, int inAmount);
-            Transaction& addLifetimeTransaction(int inId, const std::string& inCardID, int inType, int inAmount);
+            Transaction& addCurrTransaction(std::string inId, std::string inCardID, int inType, int inAmount);
+            Transaction& addLifetimeTransaction(std::string inId, std::string inCardID, int inType, int inAmount);
             
             void setBankName(std::string inBankName);
             std::string getBankName();
@@ -27,6 +27,7 @@ namespace Records{
             bool IsBilingual();
 
             void display();
+            void displayforuser();
         protected:
             std::string mBankName;
             std::string mSerialNum;

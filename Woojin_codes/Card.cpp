@@ -5,6 +5,8 @@ namespace Records {
     // 생성자 정의
     Card::Card()
     : mCardID("")
+    , mPassword("")
+    , mIssuingBank("")
     , isAdmin(false)
     {
     }
@@ -24,7 +26,7 @@ namespace Records {
         mIssuingBank = bankName;
     }
 
-    std::string Card::getCardID() const {
+    std::string Card::getCardID() const{
         return mCardID;
     }
 
@@ -32,15 +34,15 @@ namespace Records {
     //     return identificationNum;
     // }
 
-    std::string Card::getPassword() const {
+    std::string Card::getPassword() const{
         return mPassword;
     }
 
-    std::string Card::getIssuingBank() const {
+    std::string Card::getIssuingBank() const{
         return mIssuingBank;
     }
 
-    void Card::display() const {
+    void Card::display() const{
         cout << "Card ID: " << getCardID() << endl;
         // cout << "Identification Number: " << getCardID() << endl;
         cout << "Issuing Bank: " << getIssuingBank() << endl;

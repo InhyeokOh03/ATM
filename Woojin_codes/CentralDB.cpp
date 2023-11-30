@@ -9,6 +9,7 @@ using namespace std;
 namespace Records{
 
     int CentralDB::static_bank_counter = 0;
+    int CentralDB::static_trans_counter = 0;
     
     CentralDB::CentralDB(){}
     ATM& CentralDB::addATM(string inBankName, string inSerialNumber, CASH inCashPossesion, bool ismul, bool isBi)
@@ -40,6 +41,9 @@ namespace Records{
     int CentralDB::generateCardNum(int inBanknum, int inCardnum){
         return (10000000*inBanknum + inCardnum);
     }
+    int CentralDB::generateTransNum(){
+        return ++static_trans_counter;
+    }
     
     void CentralDB::displayATM(){
         cout << "ATM list" << endl;
@@ -47,13 +51,19 @@ namespace Records{
         for (auto iter = mATMs.begin(); iter != mATMs.end(); iter++){
             iter->display();
         }
-        
+    }
+    void CentralDB::displayATMforUser(){
+        cout << "ATM list" << endl;
+        cout << "-------------------" << endl;
+        for (auto iter = mATMs.begin(); iter != mATMs.end(); iter++){
+            iter->displayforuser();
+        }
     }
     void CentralDB::displayAccount() const{
         cout << "Account list" << endl;
         cout << "-------------------" << endl;
-        for (auto iter = mAccounts.begin(); iter != mAccounts.end(); iter++){
-            iter->display();
+        for (auto iter = mBanks.begin(); iter != mBanks.end(); iter++){
+            iter->displayAccounts();
         }
     }
     void CentralDB::displayBank() const{
@@ -99,6 +109,15 @@ namespace Records{
             }
         }
         cerr << "No Bank with number " << inBankNum << endl;
+        throw exception();
+    }
+    ATM& CentralDB::getATM(std::string inSerialNum){
+        for (auto iter = mATMs.begin(); iter != mATMs.end(); ++iter){
+            if (iter->getSerialNumber() == inSerialNum){
+                return *iter;
+            }
+        }
+        cerr << "No ATM with serial number " << inSerialNum << endl;
         throw exception();
     }
 

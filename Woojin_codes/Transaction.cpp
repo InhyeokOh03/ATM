@@ -3,14 +3,14 @@
 
 namespace Records {
     Transaction::Transaction() : transactionID(0), cardID(""), transactionType(0), transactionAmount(0) {}
-    Transaction::Transaction(int id, const std::string& cardID, int type, int amount)
+    Transaction::Transaction(std::string id, std::string cardID, int type, int amount)
             : transactionID(id), cardID(cardID), transactionType(type), transactionAmount(amount) {}
 
-    void Transaction::setTransactionID(int inID){
+    void Transaction::setTransactionID(std::string inID){
         this->transactionID = inID;
     }
 
-    void Transaction::setCardNum(const std::string& cardID) {
+    void Transaction::setCardNum(std::string cardID) {
         this->cardID = cardID;
     }
 
