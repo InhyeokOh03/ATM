@@ -10,6 +10,7 @@ namespace Records{
     , mSerialNum("")
     , isMulti(false)
     , isBilingual(false)
+    , NumofWithdrawals(0)
     {
         CASH nocash;
         setCashPossesion(nocash);
@@ -72,6 +73,15 @@ namespace Records{
     }
     bool ATM::IsBilingual(){
         return isBilingual;
+    }
+    void ATM::addWithdrawal(){
+        NumofWithdrawals++;
+    }
+    void ATM::resetWithdrawal(){
+        NumofWithdrawals = 0;
+    }
+    int ATM::getWithdrawals(){
+        return NumofWithdrawals;
     }
 
     void ATM::display(){

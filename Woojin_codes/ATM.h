@@ -25,6 +25,10 @@ namespace Records{
             bool IsMulti();
             void setToBilingual(bool inIsBilingual);
             bool IsBilingual();
+            void addWithdrawal();
+            void resetWithdrawal();
+            int getWithdrawals();
+
 
             void display();
             void displayforuser();
@@ -38,5 +42,6 @@ namespace Records{
             bool isBilingual;
             int CASHINPUTMAX;
             int CHECKINPUTMAX;
+            int NumofWithdrawals;
     };
 }

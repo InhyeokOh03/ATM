@@ -33,6 +33,10 @@ namespace Records{
         CASH cash(numOf1000 + ref.get1000(), numOf5000 + ref.get5000(), numOf10000 + ref.get10000(), numOf50000 + ref.get50000());
         return cash;
     }
+    CASH CASH::operator-(CASH& ref){
+        CASH cash(numOf1000 - ref.get1000(), numOf5000 - ref.get5000(), numOf10000 - ref.get10000(), numOf50000 - ref.get50000());
+        return cash;
+    }
 
     int CASH::getTotalAmountOfMoney(){
         return 1000*numOf1000 + 5000*numOf5000 + 10000*numOf10000 + 50000*numOf50000;

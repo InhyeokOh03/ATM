@@ -2,7 +2,7 @@
 #include <iostream>
 
 namespace Records {
-    Transaction::Transaction() : transactionID(0), cardID(""), transactionType(0), transactionAmount(0) {}
+    Transaction::Transaction() : transactionID(""), cardID(""), transactionType(0), transactionAmount(0) {}
     Transaction::Transaction(std::string id, std::string cardID, int type, int amount)
             : transactionID(id), cardID(cardID), transactionType(type), transactionAmount(amount) {}
 

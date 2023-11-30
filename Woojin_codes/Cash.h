@@ -10,6 +10,7 @@ namespace Records{
             CASH();
             CASH(int num1000, int num5000, int num10000, int num50000);
             CASH operator+(CASH& ref);
+            CASH operator-(CASH& ref);
             int getTotalAmountOfMoney();
             int get1000();
             int get5000();
