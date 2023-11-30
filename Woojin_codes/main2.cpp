@@ -144,9 +144,20 @@ void bankMode(CentralDB& inDB){
 }
 
 void ATMMode(CentralDB& inDB){
+    ATMSELECT:
     int SerialNum = ATMSelect(inDB);
+    if (SerialNum == 0){
+        return;
+    }
     string SerialNumber = to_string(SerialNum);
-    ATM tempATM = inDB.getATM(SerialNumber);
+    ATM tempATM;
+    try {
+        tempATM = inDB.getATM(SerialNumber);
+    } catch(exception&){
+        cerr << "Enter the correct Serial Number of ATM" << endl;
+        goto ATMSELECT;
+    }
+
     cout << endl;
     cout << "Hello. This is " << tempATM.getBankName() << "ATM service." <<endl;
     cout << endl;
@@ -590,6 +601,38 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
 }
 
 void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
+
+    cout << "Cash transfer of Fund transfer? Select one" << endl;
+    cout << "1) Cash transfer" << endl;
+    cout << "2) Fund transfer" << endl;
+    cout << "0) Quit" << endl;
+    cout << "===>";
+    int selection = input();
+    if (selection == 0) {
+        return;
+    }
+
+    TRANSFER_:
+    cout << "Enter Account number that you want to transfer money" << endl;
+    string accountto = input_str();
+
+    try {
+        inDB.getAccount(accountto);
+    } catch (exception&) {
+        cout << "Enter correct account number" << endl;
+        goto TRANSFER_;
+    }
+    string tobank = inDB.getAccount(accountto).getBankName();
+    string toaccount = inDB.getAccount(accountto).getAccountNumber();
+
+    if (selection == 1){
+
+    }
+
+    cout << "How much money you want to transfer?" << endl;
+    cout << "===>";
+    int money = input();
+
 
 }
 

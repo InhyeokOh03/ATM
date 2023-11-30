@@ -121,4 +121,17 @@ namespace Records{
         throw exception();
     }
 
+    Account& CentralDB::getAccount(std::string inID){
+        for (int i = 0; i < mBanks.size(); i++){
+            try {
+                mBanks[i].getAccount(inID);
+                } catch (exception&) {
+                    continue;
+                }
+            return mBanks[i].getAccount(inID);
+        }
+        cerr << "No account with ID " << inID << endl;
+        throw exception();
+    }
+
 }
