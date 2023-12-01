@@ -9,9 +9,6 @@ namespace Records{
         public:
             ATM();
             ATM(std::string inBankName, std::string inSerialNum, CASH inCash, bool isMulti, bool isBi);
-            void printCurrTransaction() const;
-            void printLifetimeTransaction() const;
-            void makeTXTFile();
             Transaction& addCurrTransaction(std::string inId, std::string inCardID, int inType, int inAmount);
             Transaction& addLifetimeTransaction(std::string inId, std::string inCardID, int inType, int inAmount);
             

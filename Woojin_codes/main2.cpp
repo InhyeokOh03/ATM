@@ -20,21 +20,20 @@
 
 using namespace std;
 using namespace Records;
-int displayDBMenu();
+int displayDBMenu(CentralDB& inDB);
 void makeATM(CentralDB& inDB);
 void makeAccountandCard(CentralDB& inDB, int bankNum);
 void displayAdminMode(CentralDB& inDB);
 void bankMode(CentralDB& inDB);
 void ATMMode(CentralDB& inDB);
-void ATMMode_KR(CentralDB& inDB);
 void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM);
 void KR_ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM);
 void ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 void KR_ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
-int ATMADMINMENU(string inBankName);
-int KR_ATMADMINMENU(string inBankName);
-int ATMMenu(string inBankName);
-int KR_ATMMenu(string inBankName);
+int ATMADMINMENU(CentralDB& inDB, string inBankName);
+int KR_ATMADMINMENU(CentralDB& inDB, string inBankName);
+int ATMMenu(CentralDB& inDB, string inBankName);
+int KR_ATMMenu(CentralDB& inDB, string inBankName);
 int bankSelect(CentralDB& inDB);
 int ATMSelect(CentralDB& inDB);
 void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
@@ -43,8 +42,8 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 void KR_withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
-int input();
-string input_str();
+int input(CentralDB& inDB);
+string input_str(CentralDB& inDB);
 
 int main() {
     CentralDB DB;
@@ -55,7 +54,7 @@ int main() {
     bool done = false;
 
     while(!done) {
-        int selection = displayDBMenu();
+        int selection = displayDBMenu(DB);
         switch(selection) {
         case 1: // Go to ADMINMODE
             cout << endl;
@@ -87,7 +86,7 @@ int main() {
     }
 }
 
-int displayDBMenu() {
+int displayDBMenu(CentralDB& inDB) {
         int selection;
         cout << endl;
         cout << "Central Database" << endl;
@@ -102,7 +101,7 @@ int displayDBMenu() {
         cout << "0) Quit" << endl;
         cout << endl;
         cout << "===>";
-        selection = input();
+        selection = input(inDB);
         return selection;
     }
 
@@ -115,7 +114,7 @@ void displayAdminMode(CentralDB& inDB) {
     cout << "0) Back to ModeSelect" << endl;
     cout << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     switch (selection) {
         case 1:
             cout<< endl;
@@ -139,7 +138,7 @@ void bankMode(CentralDB& inDB){
     cout << "0) Back to ModeSelect" << endl;
     cout << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     switch (selection) {
         case 1:
             cout << endl;
@@ -180,7 +179,7 @@ void ATMMode(CentralDB& inDB){
     cout << "0) back to menu" << endl;
     cout << "===>";
 
-    int menuselection = input();
+    int menuselection = input(inDB);
 
     if (menuselection == 0) {
         return;
@@ -198,7 +197,7 @@ void ATMMode(CentralDB& inDB){
         cout << "0) 메뉴로 돌아가기" << endl;
         cout << "===>";
 
-        int KRmenuselection = input();
+        int KRmenuselection = input(inDB);
 
         if (KRmenuselection == 0) {
             return;
@@ -210,7 +209,7 @@ void ATMMode(CentralDB& inDB){
 
         cout << "시작하려면 신용카드를 삽입해주세요. (카드 번호를 입력)" << endl;
         cout << "===>";
-        string KRcardnum = input_str();
+        string KRcardnum = input_str(inDB);
 
         Account KRtempaccount;
         try {
@@ -227,7 +226,7 @@ void ATMMode(CentralDB& inDB){
         cout << "카드(계좌) 비밀번호를 입력해주세요" << endl;
         cout << "===>";
 
-        string KRpassword = input_str();
+        string KRpassword = input_str(inDB);
         bool KRisAdmin = false;
         try {
             KRisAdmin = inDB.getBank(tempATM.getBankName()).getCard(KRcardnum).isadmin();
@@ -292,7 +291,7 @@ void ATMMode(CentralDB& inDB){
 
     cout << "To start, Please insert your debit card. (Input your Card Number)" << endl;
     cout << "===>";
-    string cardnum = input_str();
+    string cardnum = input_str(inDB);
 
     Account tempaccount;
     try {
@@ -308,7 +307,7 @@ void ATMMode(CentralDB& inDB){
     cout << "Enter your account(card) password." << endl;
     cout << "===>";
 
-    string password = input_str();
+    string password = input_str(inDB);
     bool isAdmin = false;
     try {
         isAdmin = inDB.getBank(tempATM.getBankName()).getCard(cardnum).isadmin();
@@ -376,7 +375,7 @@ void ATMMode(CentralDB& inDB){
 void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM){
     bool done = false;
     while (!done) {
-        int selection = ATMADMINMENU(inBank.getBankName());
+        int selection = ATMADMINMENU(inDB, inBank.getBankName());
         switch(selection){
             case 1:
                 cout << endl;
@@ -394,7 +393,7 @@ void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM){
 void KR_ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM){
     bool done = false;
     while (!done) {
-        int selection = ATMADMINMENU(inBank.getBankName());
+        int selection = ATMADMINMENU(inDB, inBank.getBankName());
         switch(selection){
             case 1:
                 cout << endl;
@@ -413,7 +412,7 @@ void ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount){
     
     bool done = false;
     while (!done){
-        int selection = ATMMenu(inBank.getBankName());
+        int selection = ATMMenu(inDB, inBank.getBankName());
         switch(selection){
             case 1:
                 cout << endl;
@@ -446,7 +445,7 @@ void KR_ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount){
     
     bool done = false;
     while (!done){
-        int selection = KR_ATMMenu(inBank.getBankName());
+        int selection = KR_ATMMenu(inDB, inBank.getBankName());
         switch(selection){
             case 1:
                 cout << endl;
@@ -474,7 +473,7 @@ void KR_ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount){
     }
 }
 
-int ATMADMINMENU(string inBankName){
+int ATMADMINMENU(CentralDB& inDB, string inBankName){
     int selection;
     cout << endl;
     cout << inBankName << " ATM admin service" << endl;
@@ -482,11 +481,11 @@ int ATMADMINMENU(string inBankName){
     cout << "1) Transaction History" << endl;
     cout << "0) Quit" << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     return selection;
 }
 
-int KR_ATMADMINMENU(string inBankName){
+int KR_ATMADMINMENU(CentralDB& inDB, string inBankName){
     int selection;
     cout << endl;
     cout << inBankName << " 자동입출금기 관리자 서비스" << endl;
@@ -494,11 +493,11 @@ int KR_ATMADMINMENU(string inBankName){
     cout << "1) 모든 거래 출력" << endl;
     cout << "0) 나가기" << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     return selection;
 }
 
-int ATMMenu(string inBankName){
+int ATMMenu(CentralDB& inDB, string inBankName){
     int selection;
     cout << endl;
     cout << inBankName << " ATM service" << endl;
@@ -509,11 +508,11 @@ int ATMMenu(string inBankName){
     cout << "4) Show my account info" << endl;
     cout << "0) Quit" << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     return selection;
 }
 
-int KR_ATMMenu(string inBankName){
+int KR_ATMMenu(CentralDB& inDB, string inBankName){
     int selection;
     cout << endl;
     cout << inBankName << " 자동입출금기 서비스" << endl;
@@ -524,7 +523,7 @@ int KR_ATMMenu(string inBankName){
     cout << "4) 계좌 정보" << endl;
     cout << "0) 나가기" << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     return selection;
 }
 
@@ -532,7 +531,7 @@ void makeATM(CentralDB& inDB) {
     int banknum;
     inDB.displayBank();
     cout << "Choose number of bank ";
-    banknum = input();
+    banknum = input(inDB);
     int serialnum;
     try {
         serialnum = inDB.generateSerialNum(inDB.getBank(banknum).getBankUniqueNum() ,inDB.getBank(banknum).getATMCounter());
@@ -549,13 +548,13 @@ void makeATM(CentralDB& inDB) {
     int num1000;
 
     cout << "Num of 50,000? ";
-    num50000 = input();
+    num50000 = input(inDB);
     cout << "Num of 10,000? ";
-    num10000 = input();
+    num10000 = input(inDB);
     cout << "Num of 5,000? ";
-    num5000 = input();
+    num5000 = input(inDB);
     cout << "Num of 1,000? ";
-    num1000 = input();
+    num1000 = input(inDB);
 
     CASH cash(num1000, num5000, num10000, num50000);
 
@@ -569,7 +568,7 @@ void makeATM(CentralDB& inDB) {
     cout << "1) Single Bank ATM" << endl;
     cout << "2) Multi Bank ATM" << endl;
     MULTICHECK:
-    isMul = input();
+    isMul = input(inDB);
     if (isMul == 1){
         isMulti = false;
     } else if (isMul == 2){
@@ -586,7 +585,7 @@ void makeATM(CentralDB& inDB) {
     cout << "1) Bilingual" << endl;
     cout << "2) Monolingual" << endl;
     BICHECK:
-    isBi = input();
+    isBi = input(inDB);
     if (isBi == 1){
         isBilingual = true;
     } else if (isBi == 2) {
@@ -604,13 +603,13 @@ void makeAccountandCard(CentralDB& inDB, int bankNum){
     cout << endl;
     cout << "enter your name in english" << endl;
     cout << "===>";
-    string username = input_str();
+    string username = input_str(inDB);
     
     string password;
     SETPASSWORD:
     cout << "Set your password " << endl;
     cout << "===>";
-    password = input_str();
+    password = input_str(inDB);
     
     if (password.length() < 6 || password.length() > 20){
         cout << "Length of Your password should be between 6 and 20." << endl;
@@ -619,7 +618,7 @@ void makeAccountandCard(CentralDB& inDB, int bankNum){
     string repass;
     cout << "Please Rewrite your password " << endl;
     cout << "===>";
-    repass = input_str();
+    repass = input_str(inDB);
 
     if (password != repass){
         cout << "Failed to Check your password." <<endl;
@@ -668,7 +667,7 @@ int bankSelect(CentralDB& inDB) {
     cout << "0) Back to mode select" << endl;
     cout << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     return selection;
 }
 
@@ -682,7 +681,7 @@ int ATMSelect(CentralDB& inDB) {
     cout << "0) Quit" << endl;
     cout << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
     return selection;
 }
 
@@ -693,7 +692,7 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     cout << "2) Check" << endl;
     cout << endl;
     string transID = to_string(inDB.generateTransNum());
-    int selection = input();
+    int selection = input(inDB);
 
     if (selection == 1){
         int num50000;
@@ -702,13 +701,13 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         int num1000;
         CASHINSERT:
         cout << "Number of 50,000? ";
-        num50000 = input();
+        num50000 = input(inDB);
         cout << "Number of 10,000? ";
-        num10000 = input();
+        num10000 = input(inDB);
         cout << "Number of 5,000? ";
-        num5000 = input();
+        num5000 = input(inDB);
         cout << "Number of 1,000? ";
-        num1000 = input();
+        num1000 = input(inDB);
 
         if (num1000 + num5000 + num10000 + num50000 > 50){
             cout << "You can't deposit more than 50 pieces of cash at one time." << endl;
@@ -729,7 +728,7 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             cout << "1) Charge deposit fee" << endl;
             cout << "0) Cancel deposit" << endl;
 
-            int press = input();
+            int press = input(inDB);
             if (press == 1){
                 CASH additionalcash(1, 0, 0, 0);
                 inAccount.addMoney(inCash.getTotalAmountOfMoney());
@@ -757,7 +756,7 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         CHECKINSERT:
         cout << "How much would you like to put in a check?" <<endl;
         cout << "===>";
-        int checkamount = input();
+        int checkamount = input(inDB);
 
         if (checkamount < 100000){
             cout << "Error: Invalid Check" << endl;
@@ -780,7 +779,7 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             cout << "1) Charge deposit fee" << endl;
             cout << "0) Cancel deposit" << endl;
 
-            int press = input();
+            int press = input(inDB);
             if (press == 1){
                 inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
                 inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
@@ -808,7 +807,7 @@ void KR_deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     cout << "2) 수표" << endl;
     cout << endl;
     string transID = to_string(inDB.generateTransNum());
-    int selection = input();
+    int selection = input(inDB);
 
     if (selection == 1){
         int num50000;
@@ -817,13 +816,13 @@ void KR_deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         int num1000;
         KR_CASHINSERT:
         cout << "몇 장의 50,000원을 넣으시겠습니까? ";
-        num50000 = input();
+        num50000 = input(inDB);
         cout << "몇 장의 10,000원을 넣으시겠습니까? ";
-        num10000 = input();
+        num10000 = input(inDB);
         cout << "몇 장의 5,000원을 넣으시겠습니까? ";
-        num5000 = input();
+        num5000 = input(inDB);
         cout << "몇 장의 1,000원을 넣으시겠습니까? ";
-        num1000 = input();
+        num1000 = input(inDB);
 
         if (num1000 + num5000 + num10000 + num50000 > 50){
             cout << "한 번에 50장 이상의 현금을 입금하실 수 없습니다." << endl;
@@ -844,7 +843,7 @@ void KR_deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             cout << "1) 입금 수수료를 지불" << endl;
             cout << "0) 입금을 취소" << endl;
 
-            int press = input();
+            int press = input(inDB);
             if (press == 1){
                 CASH additionalcash(1, 0, 0, 0);
                 inAccount.addMoney(inCash.getTotalAmountOfMoney());
@@ -872,7 +871,7 @@ void KR_deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         KR_CHECKINSERT:
         cout << "수표의 금액을 입력해주세요" <<endl;
         cout << "===>";
-        int checkamount = input();
+        int checkamount = input(inDB);
 
         if (checkamount < 100000){
             cout << "에러: 허용되지 않은 수표입니다" << endl;
@@ -895,7 +894,7 @@ void KR_deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             cout << "1) 입금 수수료를 지불" << endl;
             cout << "0) 거래를 취소" << endl;
 
-            int press = input();
+            int press = input(inDB);
             if (press == 1){
                 inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
                 inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
@@ -926,7 +925,7 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     cout << "1) Yes" << endl;
     cout << "0) No (Quit)" << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
 
     if (selection == 1){
         if (inATM.getWithdrawals() == 3){
@@ -942,13 +941,13 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         int num1000;
     
         cout << "Number of 50,000? " << "[in ATM remain: " <<tempcash.get50000() << "]" << endl;
-        num50000 = input();
+        num50000 = input(inDB);
         cout << "Number of 10,000? "<< "[in ATM remain: " <<tempcash.get10000() << "]" << endl;
-        num10000 = input();
+        num10000 = input(inDB);
         cout << "Number of 5,000? "<< "[in ATM remain: " <<tempcash.get5000() << "]" << endl;
-        num5000 = input();
+        num5000 = input(inDB);
         cout << "Number of 1,000? "<< "[in ATM remain: " <<tempcash.get1000() << "]" << endl;
-        num1000 = input();
+        num1000 = input(inDB);
 
         if (num50000 > tempcash.get50000() || num10000 > tempcash.get10000() || num5000 > tempcash.get5000() || num1000 > tempcash.get1000()){
             cout << "Error: There are not enough cash in atm" << endl;
@@ -1022,7 +1021,7 @@ void KR_withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
     cout << "1) 네" << endl;
     cout << "0) 아니오 (나가기)" << endl;
     cout << "===>";
-    selection = input();
+    selection = input(inDB);
 
     if (selection == 1){
         if (inATM.getWithdrawals() == 3){
@@ -1038,13 +1037,13 @@ void KR_withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
         int num1000;
     
         cout << "몇 장의 50,000원을 출금하시겠습니까? " << "[ATM 보유량: " <<tempcash.get50000() << "]" << endl;
-        num50000 = input();
+        num50000 = input(inDB);
         cout << "몇 장의 10,000원을 출금하시겠습니까? "<< "[ATM 보유량: " <<tempcash.get10000() << "]" << endl;
-        num10000 = input();
+        num10000 = input(inDB);
         cout << "몇 장의 5,000원을 출금하시겠습니까? "<< "[ATM 보유량: " <<tempcash.get5000() << "]" << endl;
-        num5000 = input();
+        num5000 = input(inDB);
         cout << "몇 장의 1,000원을 출금하시겠습니까? "<< "[ATM 보유량: " <<tempcash.get1000() << "]" << endl;
-        num1000 = input();
+        num1000 = input(inDB);
 
         if (num50000 > tempcash.get50000() || num10000 > tempcash.get10000() || num5000 > tempcash.get5000() || num1000 > tempcash.get1000()){
             cout << "ATM의 현금 보유량이 요청하신 것보다 적습니다" << endl;
@@ -1117,7 +1116,7 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     cout << "2) Fund transfer" << endl;
     cout << "0) Quit" << endl;
     cout << "===>";
-    int selection = input();
+    int selection = input(inDB);
     if (selection == 0) {
         return;
     }
@@ -1129,7 +1128,7 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
 
     TRANSFER_:
     cout << "Enter Account number that you want to transfer money" << endl;
-    string accountto = input_str();
+    string accountto = input_str(inDB);
 
     try {
         inDB.getAccount(accountto);
@@ -1151,13 +1150,13 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         int num5000;
         int num1000;
         cout << "Number of 50,000? ";
-        num50000 = input();
+        num50000 = input(inDB);
         cout << "Number of 10,000? ";
-        num10000 = input();
+        num10000 = input(inDB);
         cout << "Number of 5,000? ";
-        num5000 = input();
+        num5000 = input(inDB);
         cout << "Number of 1,000? ";
-        num1000 = input();
+        num1000 = input(inDB);
 
         CASH inCash(num1000, num5000, num10000, num50000);
 
@@ -1169,7 +1168,7 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         cout << "0) Cancel transfer (back to atm menu)" << endl;
         cout << "===>";
         
-        int cashselect = input();
+        int cashselect = input(inDB);
         if (cashselect == 0) {
             cout << "transfer canceled and your cash returned" << endl;
             return; 
@@ -1179,7 +1178,7 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             cout << "1) Pay with 1000 x 5" << endl;
             cout << "2) Pay with 5000 x 1" << endl;
             cout << "===>";
-            int payselect = input();
+            int payselect = input(inDB);
             if (payselect == 1) {
                 CASH fee1000(5, 0, 0, 0);
                 inATM.setCashPossesion(inATM.getCashPossesion() + inCash + fee1000);
@@ -1211,7 +1210,7 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         cout << "Your account balance: " << inAccount.getAvailableMoney() << endl;
         cout << endl;
         cout << "===>";
-        int transmoney = input();
+        int transmoney = input(inDB);
 
         int transfee;
 
@@ -1231,7 +1230,7 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         cout << "1) OK" << endl;
         cout << "0) Cancel transfer (back to atm menu)" << endl;
         cout << "===>";
-        int transselect = input();
+        int transselect = input(inDB);
 
         if (transselect == 0){
             cout << "Transfer canceled." << endl;
@@ -1271,7 +1270,7 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
     cout << "2) 계좌 이체" << endl;
     cout << "0) 나가기" << endl;
     cout << "===>";
-    int selection = input();
+    int selection = input(inDB);
     if (selection == 0) {
         return;
     }
@@ -1283,7 +1282,7 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
 
     TRANSFER_:
     cout << "송금 대상 계좌의 계좌 번호를 입력해주세요" << endl;
-    string accountto = input_str();
+    string accountto = input_str(inDB);
 
     try {
         inDB.getAccount(accountto);
@@ -1306,13 +1305,13 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
         int num5000;
         int num1000;
         cout << "50,000원 몇 장을 송금하시겠습니까? ";
-        num50000 = input();
+        num50000 = input(inDB);
         cout << "10,000원 몇 장을 송금하시겠습니까? ";
-        num10000 = input();
+        num10000 = input(inDB);
         cout << "5,000원 몇 장을 송금하시겠습니까? ";
-        num5000 = input();
+        num5000 = input(inDB);
         cout << "1,000원 몇 장을 송금하시겠습니까? ";
-        num1000 = input();
+        num1000 = input(inDB);
 
         CASH inCash(num1000, num5000, num10000, num50000);
 
@@ -1324,7 +1323,7 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
         cout << "0) 거래 취소 (메뉴로 돌아가기)" << endl;
         cout << "===>";
         
-        int cashselect = input();
+        int cashselect = input(inDB);
         if (cashselect == 0) {
             cout << "거래가 취소되었습니다" << endl;
             return; 
@@ -1334,7 +1333,7 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
             cout << "1) 1000 x 5로 지불하기" << endl;
             cout << "2) 5000 x 1로 지불하기" << endl;
             cout << "===>";
-            int payselect = input();
+            int payselect = input(inDB);
             if (payselect == 1) {
                 CASH fee1000(5, 0, 0, 0);
                 inATM.setCashPossesion(inATM.getCashPossesion() + inCash + fee1000);
@@ -1366,7 +1365,7 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
         cout << "계좌 금액: " << inAccount.getAvailableMoney() << endl;
         cout << endl;
         cout << "===>";
-        int transmoney = input();
+        int transmoney = input(inDB);
 
         int transfee;
 
@@ -1386,7 +1385,7 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
         cout << "1) 확인" << endl;
         cout << "0) 거래 취소 (메뉴로 돌아가기)" << endl;
         cout << "===>";
-        int transselect = input();
+        int transselect = input(inDB);
 
         if (transselect == 0){
             cout << "거래가 취소되었습니다" << endl;
@@ -1418,14 +1417,15 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
 
 }
 
-int input() {
+int input(CentralDB& inDB) {
     INPUT:
     string selection;
     cin >> selection;
 
     if (selection == "x") {
         //정보 출력
-        cout << "You pressed x" << endl;
+        inDB.displayATM();
+        inDB.displayAccount();
         goto INPUT;
     } else {
 
@@ -1434,14 +1434,15 @@ int input() {
     return 0;
 }
 
-string input_str() {
+string input_str(CentralDB& inDB) {
     INPUT_STR:
     string selection;
     cin >> selection;
 
     if (selection == "x") {
         //정보 출력
-        cout << "You pressed x" << endl;
+        inDB.displayATM();
+        inDB.displayAccount();
         goto INPUT_STR;
     } else {
         return selection;
