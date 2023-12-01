@@ -19,6 +19,7 @@ namespace Records{
             void subtractMoney(int outMoney);
             int getAvailableMoney();
             void display() const;
+            void display_KR() const;
 
 
         protected:

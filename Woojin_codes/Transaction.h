@@ -9,7 +9,8 @@ namespace Records {
         Transaction(std::string id, std::string cardID, int type, int amount);
            
         // 멤버 함수
-        void printTransaction() const;
+        void printTransaction();
+        void printTransaction_KR();
         void setTransactionID(std::string inID);
         void setCardNum(std::string cardID);
         void setTransType(int type);

@@ -26,15 +26,23 @@ void makeAccountandCard(CentralDB& inDB, int bankNum);
 void displayAdminMode(CentralDB& inDB);
 void bankMode(CentralDB& inDB);
 void ATMMode(CentralDB& inDB);
+void ATMMode_KR(CentralDB& inDB);
 void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM);
+void KR_ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM);
 void ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
+void KR_ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 int ATMADMINMENU(string inBankName);
+int KR_ATMADMINMENU(string inBankName);
 int ATMMenu(string inBankName);
+int KR_ATMMenu(string inBankName);
 int bankSelect(CentralDB& inDB);
 int ATMSelect(CentralDB& inDB);
 void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
+void KR_deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
+void KR_withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
+void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
 int input();
 string input_str();
 
@@ -145,6 +153,7 @@ void bankMode(CentralDB& inDB){
     }
 }
 
+
 void ATMMode(CentralDB& inDB){
     ATMSELECT:
     int SerialNum = ATMSelect(inDB);
@@ -164,9 +173,127 @@ void ATMMode(CentralDB& inDB){
     cout << endl;
     cout << "Hello. This is " << tempATM.getBankName() << "ATM service." <<endl;
     cout << endl;
+    cout << "1) Insert debit card" << endl;
+    if (tempATM.IsBilingual() == true){
+        cout << "2) Change language to Korean(한국어)" << endl;
+    }
+    cout << "0) back to menu" << endl;
+    cout << "===>";
+
+    int menuselection = input();
+
+    if (menuselection == 0) {
+        return;
+    }
+
+    if (tempATM.IsBilingual() == true && menuselection == 2){
+        KOREAN:
+        cout << endl;
+        cout << "안녕하십니까 " << tempATM.getBankName() << "자동입출금기 서비스입니다." <<endl;
+        cout << endl;
+        cout << "1) 신용카드 삽입" << endl;
+        if (tempATM.IsBilingual() == true){
+            cout << "2) 언어를 영어로 변경(English)" << endl;
+        }
+        cout << "0) 메뉴로 돌아가기" << endl;
+        cout << "===>";
+
+        int KRmenuselection = input();
+
+        if (KRmenuselection == 0) {
+            return;
+        }
+
+        if (tempATM.IsBilingual() == true && KRmenuselection == 2){
+            goto ATMSERVICE;
+        }
+
+        cout << "시작하려면 신용카드를 삽입해주세요. (카드 번호를 입력)" << endl;
+        cout << "===>";
+        string KRcardnum = input_str();
+
+        Account KRtempaccount;
+        try {
+            KRtempaccount = inDB.getAccount(KRcardnum);
+        } catch (exception&) {
+            cout << "해당하는 카드를 찾을 수 없습니다" << endl;
+            cout << "카드번호를 다시 입력해주세요" << endl;
+            goto KOREAN;
+        }
+
+        cout << endl;
+        int KRthreecount = 0;
+        KR_VALIDATION:
+        cout << "카드(계좌) 비밀번호를 입력해주세요" << endl;
+        cout << "===>";
+
+        string KRpassword = input_str();
+        bool KRisAdmin = false;
+        try {
+            KRisAdmin = inDB.getBank(tempATM.getBankName()).getCard(KRcardnum).isadmin();
+        } catch (exception&){
+
+        }
+
+        if (KRisAdmin){
+            KR_ATMUI_ADMIN(inDB, inDB.getBank(tempATM.getBankName()), inDB.getATM(SerialNumber));
+            return;
+        }
+
+        if (!tempATM.IsMulti()){
+            try {
+                inDB.getBank(tempATM.getBankName()).getCard(KRcardnum);
+            } catch (exception&){
+                cout << "에러: 허용되지 않은 카드" << endl;
+                return;
+            }
+
+            if (!inDB.getBank(tempATM.getBankName()).tryLogin(KRcardnum, KRpassword)){
+                cout << "에러: 당신의 카드번호 혹은 비밀번호가 다릅니다." << endl;
+                cout << "연속으로 세 번 틀릴경우 세션이 종료됩니다. ["<< ++KRthreecount << " 번 틀렸습니다]" << endl;
+                if (KRthreecount == 3){
+                    cout << "에러: 연속으로 세 번 틀렸습니다. 세션이 종료됩니다." << endl;
+                    return;
+                }
+                goto KR_VALIDATION;
+            }
+            cout << "성공적으로 ATM에 로그인 했습니다." << endl;
+            KR_ATMUI(inDB, inDB.getBank(tempATM.getBankName()), inDB.getATM(SerialNumber), inDB.getBank(tempATM.getBankName()).getAccount(KRcardnum));
+            return;
+
+        } else {
+            try {
+                inDB.getBank(KRtempaccount.getBankName()).getCard(KRcardnum);
+            } catch (exception&){
+                cout << "에러: 허용되지 않은 카드" << endl;
+                return;
+            }
+
+            if (!inDB.getBank(KRtempaccount.getBankName()).tryLogin(KRcardnum, KRpassword)){
+                cout << "에러: 당신의 카드번호 혹은 비밀번호가 다릅니다." << endl;
+                cout << "연속으로 세 번 틀릴경우 세션이 종료됩니다. ["<< ++KRthreecount << " 번 틀렸습니다]" << endl;
+                if (KRthreecount == 3){
+                    cout << "에러: 연속으로 세 번 틀렸습니다. 세션이 종료됩니다." << endl;
+                    return;
+                }
+                goto KR_VALIDATION;
+            }
+            cout << "성공적으로 ATM에 로그인 했습니다." << endl;
+            KR_ATMUI(inDB, inDB.getBank(KRtempaccount.getBankName()), inDB.getATM(SerialNumber), inDB.getAccount(KRcardnum));
+            return;
+
+        }
+
+
+        cout << "성공적으로 ATM에 로그인 했습니다." << endl;
+        KR_ATMUI(inDB, inDB.getBank(tempATM.getBankName()), inDB.getATM(SerialNumber), inDB.getBank(tempATM.getBankName()).getAccount(KRcardnum));
+        return;
+        }
+
     cout << "To start, Please insert your debit card. (Input your Card Number)" << endl;
     cout << "===>";
     string cardnum = input_str();
+
     Account tempaccount;
     try {
         tempaccount = inDB.getAccount(cardnum);
@@ -241,7 +368,9 @@ void ATMMode(CentralDB& inDB){
 
     cout << "You successfully login to ATM" << endl;
     ATMUI(inDB, inDB.getBank(tempATM.getBankName()), inDB.getATM(SerialNumber), inDB.getBank(tempATM.getBankName()).getAccount(cardnum));
+    return;
 
+    
 }
 
 void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM){
@@ -258,6 +387,24 @@ void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM){
                 break;
             default:
                 cerr << "unknown command" << endl;
+        }
+    }
+}
+
+void KR_ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM){
+    bool done = false;
+    while (!done) {
+        int selection = ATMADMINMENU(inBank.getBankName());
+        switch(selection){
+            case 1:
+                cout << endl;
+                inATM.displaycurrTransaction();
+                break;
+            case 0:
+                done = true;
+                break;
+            default:
+                cerr << "허용되지 않은 명령" << endl;
         }
     }
 }
@@ -286,10 +433,43 @@ void ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount){
                 break;
             case 0:
                 inATM.displaylifetimeTransaction();
+                inATM.resetWithdrawal();
                 done = true;
                 break;
             default:
                 cerr << "Unknown command." << endl;
+        }
+    }
+}
+
+void KR_ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount){
+    
+    bool done = false;
+    while (!done){
+        int selection = KR_ATMMenu(inBank.getBankName());
+        switch(selection){
+            case 1:
+                cout << endl;
+                KR_deposit(inDB, inBank, inATM, inAccount);
+                break;
+            case 2:
+                cout << endl;
+                KR_withdraw(inDB, inBank, inATM, inAccount);
+                break;
+            case 3:
+                cout << endl;
+                KR_transfer(inDB, inBank, inATM, inAccount);
+                break;
+            case 4:
+                cout << endl;
+                inAccount.display_KR();
+                break;
+            case 0:
+                inATM.displaylifetimeTransaction_KR();
+                done = true;
+                break;
+            default:
+                cerr << "허용되지 않은 명령" << endl;
         }
     }
 }
@@ -306,6 +486,18 @@ int ATMADMINMENU(string inBankName){
     return selection;
 }
 
+int KR_ATMADMINMENU(string inBankName){
+    int selection;
+    cout << endl;
+    cout << inBankName << " 자동입출금기 관리자 서비스" << endl;
+    cout << "-------------------------" << endl;
+    cout << "1) 모든 거래 출력" << endl;
+    cout << "0) 나가기" << endl;
+    cout << "===>";
+    selection = input();
+    return selection;
+}
+
 int ATMMenu(string inBankName){
     int selection;
     cout << endl;
@@ -316,6 +508,21 @@ int ATMMenu(string inBankName){
     cout << "3) Send" << endl;
     cout << "4) Show my account info" << endl;
     cout << "0) Quit" << endl;
+    cout << "===>";
+    selection = input();
+    return selection;
+}
+
+int KR_ATMMenu(string inBankName){
+    int selection;
+    cout << endl;
+    cout << inBankName << " 자동입출금기 서비스" << endl;
+    cout << "-------------------------" << endl;
+    cout << "1) 입금" << endl;
+    cout << "2) 출금" << endl;
+    cout << "3) 송금" << endl;
+    cout << "4) 계좌 정보" << endl;
+    cout << "0) 나가기" << endl;
     cout << "===>";
     selection = input();
     return selection;
@@ -558,7 +765,7 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             goto CHECKINSERT;
         }
 
-        inAccount.addMoney(checkamount);
+        
 
         
 
@@ -577,6 +784,7 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             if (press == 1){
                 inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
                 inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
+                inAccount.addMoney(checkamount);
             } else if (press == 0){
                 return;
             } else {
@@ -586,8 +794,125 @@ void deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         }else{
             inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount);
             inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount);
+            inAccount.addMoney(checkamount);
         }
         cout << "Your Check successfully deposited to your account." << endl;
+    }
+
+}
+
+void KR_deposit(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
+
+    cout << "현금 혹은 수표중 어떤 것을 입금하시겠습니까?" << endl;
+    cout << "1) 현금" << endl;
+    cout << "2) 수표" << endl;
+    cout << endl;
+    string transID = to_string(inDB.generateTransNum());
+    int selection = input();
+
+    if (selection == 1){
+        int num50000;
+        int num10000;
+        int num5000;
+        int num1000;
+        KR_CASHINSERT:
+        cout << "몇 장의 50,000원을 넣으시겠습니까? ";
+        num50000 = input();
+        cout << "몇 장의 10,000원을 넣으시겠습니까? ";
+        num10000 = input();
+        cout << "몇 장의 5,000원을 넣으시겠습니까? ";
+        num5000 = input();
+        cout << "몇 장의 1,000원을 넣으시겠습니까? ";
+        num1000 = input();
+
+        if (num1000 + num5000 + num10000 + num50000 > 50){
+            cout << "한 번에 50장 이상의 현금을 입금하실 수 없습니다." << endl;
+            cout << "현금을 다시 넣어주세요" << endl;
+            goto KR_CASHINSERT;
+        }
+
+        CASH inCash(num1000, num5000, num10000, num50000);
+        CASH getCash = inATM.getCashPossesion();
+
+        inATM.setCashPossesion(getCash + inCash);
+
+        if (inAccount.getBankName() != inATM.getBankName()){
+            cout << "타사 은행 현금 입금의 경우 수수료가 부과됩니다" << endl;
+            cout << "수수료: KRW " << DEPOSIT_FEE_NONPRIMARY << endl;
+            cout << endl;
+            KR_DEPOSITFEE1:
+            cout << "1) 입금 수수료를 지불" << endl;
+            cout << "0) 입금을 취소" << endl;
+
+            int press = input();
+            if (press == 1){
+                CASH additionalcash(1, 0, 0, 0);
+                inAccount.addMoney(inCash.getTotalAmountOfMoney());
+                inATM.setCashPossesion(inATM.getCashPossesion() + additionalcash);
+                inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney()+1000);
+                inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney()+1000);
+            } else if (press == 0){
+                return;
+            } else {
+                cout << "허용되지 않은 명령" << endl << endl;
+                goto KR_DEPOSITFEE1;
+            }
+        } else{
+            inAccount.addMoney(inCash.getTotalAmountOfMoney());
+            inATM.setCashPossesion(inATM.getCashPossesion());
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney());
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, inCash.getTotalAmountOfMoney());
+        }
+
+        cout << "입금이 성공적으로 계좌에 반영되었습니다." << endl;
+
+
+
+    } else if (selection == 2){
+        KR_CHECKINSERT:
+        cout << "수표의 금액을 입력해주세요" <<endl;
+        cout << "===>";
+        int checkamount = input();
+
+        if (checkamount < 100000){
+            cout << "에러: 허용되지 않은 수표입니다" << endl;
+            cout << "다시 입력해주세요" << endl;
+            goto KR_CHECKINSERT;
+        }
+
+        
+
+        
+
+        
+        cout << endl;
+        
+        if (inAccount.getBankName() != inATM.getBankName()){
+            cout << "타사 은행 수표 입금의 경우 수수료가 부과됩니다" << endl;
+            cout << "수수료: KRW " << DEPOSIT_FEE_NONPRIMARY << endl;
+            cout << endl;
+            KR_DEPOSITFEE2:
+            cout << "1) 입금 수수료를 지불" << endl;
+            cout << "0) 거래를 취소" << endl;
+
+            int press = input();
+            if (press == 1){
+                inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
+                inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount+1000);
+                inAccount.addMoney(checkamount);
+
+            } else if (press == 0){
+                return;
+            } else {
+                cout << "허용되지 않은 명령" << endl << endl;
+                goto KR_DEPOSITFEE2;
+            }
+        }else{
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount);
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), DEPOSIT, checkamount);
+            inAccount.addMoney(checkamount);
+        }
+        cout << "입금이 성공적으로 계좌에 반영되었습니다." << endl;
     }
 
 }
@@ -685,6 +1010,102 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     }
 
     cout << "You successfully withdraw cash" << endl;
+
+}
+
+void KR_withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
+    int selection;
+    string transID = to_string(inDB.generateTransNum());
+
+    CASHINPUT:
+    cout << "계좌에서 현금을 출금 하시겠습니까?" << endl;
+    cout << "1) 네" << endl;
+    cout << "0) 아니오 (나가기)" << endl;
+    cout << "===>";
+    selection = input();
+
+    if (selection == 1){
+        if (inATM.getWithdrawals() == 3){
+            cout << "이 세션에서 출금 한도에 도달했습니다. 출금한도: 3회" << endl;
+            return; 
+        }
+        cout << "얼마 만큼의 현금을 출금하시겠습니까?" << endl;
+        CASH tempcash = inATM.getCashPossesion();
+
+        int num50000;
+        int num10000;
+        int num5000;
+        int num1000;
+    
+        cout << "몇 장의 50,000원을 출금하시겠습니까? " << "[ATM 보유량: " <<tempcash.get50000() << "]" << endl;
+        num50000 = input();
+        cout << "몇 장의 10,000원을 출금하시겠습니까? "<< "[ATM 보유량: " <<tempcash.get10000() << "]" << endl;
+        num10000 = input();
+        cout << "몇 장의 5,000원을 출금하시겠습니까? "<< "[ATM 보유량: " <<tempcash.get5000() << "]" << endl;
+        num5000 = input();
+        cout << "몇 장의 1,000원을 출금하시겠습니까? "<< "[ATM 보유량: " <<tempcash.get1000() << "]" << endl;
+        num1000 = input();
+
+        if (num50000 > tempcash.get50000() || num10000 > tempcash.get10000() || num5000 > tempcash.get5000() || num1000 > tempcash.get1000()){
+            cout << "ATM의 현금 보유량이 요청하신 것보다 적습니다" << endl;
+            cout << "다시 입력해주세요" << endl;
+            goto CASHINPUT;
+        }
+
+        CASH withdrawcash(num1000, num5000, num10000, num50000);
+        if (withdrawcash.getTotalAmountOfMoney() > inAccount.getAvailableMoney()){
+            cout << "에러: 계좌에 충분한 양의 돈이 없습니다" << endl;
+            cout << "정확한 양을 다시 입력해 주세요" << endl;
+            cout << endl;
+            goto CASHINPUT;
+        }
+        if (withdrawcash.getTotalAmountOfMoney() > 500000){
+            cout << "출금 당 최대 출금 금액은 500,000원입니다." << endl;
+            cout << "올바른 금액을 입력해 주세요."<< endl;
+            cout << endl;
+            goto CASHINPUT;
+        }
+
+        if (inAccount.getBankName() != inATM.getBankName()){
+            cout << "출금 수수료: KRW" << WITHDRAWAL_FEE_NONPRIMARY << endl;
+            if (withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_NONPRIMARY > inAccount.getAvailableMoney()){
+                cout << "계좌에 충분한 양의 돈이 없습니다." << endl;
+                cout << "다시 입력해 주세요." << endl;
+                cout << endl;
+                goto CASHINPUT;
+            }
+            cout << "자동적으로 계좌에서 출금수수료가 부과되었습니다." << endl;
+            inAccount.subtractMoney(withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_NONPRIMARY);
+            inATM.setCashPossesion(inATM.getCashPossesion() - withdrawcash);
+            inATM.addWithdrawal();
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), WITHDRAW, withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_NONPRIMARY);
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), WITHDRAW, withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_NONPRIMARY);
+
+        } else{
+            cout << "출금 수수료: KRW" << WITHDRAWAL_FEE_PRIMARY << endl;
+            if (withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_PRIMARY > inAccount.getAvailableMoney()){
+                cout << "계좌에 충분한 양의 돈이 없습니다." << endl;
+                cout << "다시 입력해 주세요." << endl;
+                cout << endl;
+                goto CASHINPUT;
+            }
+            cout << "자동적으로 계좌에서 출금수수료가 부과되었습니다." << endl;
+            inAccount.subtractMoney(withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_PRIMARY);
+            inATM.setCashPossesion(inATM.getCashPossesion() - withdrawcash);
+            inATM.addWithdrawal();
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), WITHDRAW, withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_NONPRIMARY);
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), WITHDRAW, withdrawcash.getTotalAmountOfMoney() + WITHDRAWAL_FEE_NONPRIMARY);
+
+        }
+
+    } else if (selection == 0) {
+        return;
+    } else {
+        cout << "오류: 허용되지 않은 명령" << endl;
+        goto CASHINPUT;
+    }
+
+    cout << "성공적으로 출금되었습니다" << endl;
 
 }
 
@@ -832,6 +1253,161 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
             cout << "Successfully reflected to accounts" << endl;
         } else {
             cout << "Unknown command" << endl;
+            goto PAYMENTCHECK;
+        }
+
+    } 
+
+    
+
+
+}
+
+void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
+
+    SELECT:
+    cout << "현금 송금, 계좌 이체 중 하나를 골라주십시오." << endl;
+    cout << "1) 현금 송금" << endl;
+    cout << "2) 계좌 이체" << endl;
+    cout << "0) 나가기" << endl;
+    cout << "===>";
+    int selection = input();
+    if (selection == 0) {
+        return;
+    }
+    if (selection == 1 || selection == 2 || selection == 0){}
+    else {
+        cout << "에러: 허용되지 않은 명령" << endl;
+        goto SELECT;
+    }
+
+    TRANSFER_:
+    cout << "송금 대상 계좌의 계좌 번호를 입력해주세요" << endl;
+    string accountto = input_str();
+
+    try {
+        inDB.getAccount(accountto);
+    } catch (exception&) {
+        cout << "입력하신 계좌를 찾을 수 없습니다." << endl;
+        cout << "정확한 계좌를 입력해주세요." << endl;
+        goto SELECT;
+    }
+    string tobank = inDB.getAccount(accountto).getBankName();
+    string toaccount = inDB.getAccount(accountto).getAccountNumber();
+    string atmbank = inATM.getBankName();
+    string mybank = inAccount.getBankName();
+
+    if (selection == 1){
+        cout << "현금 송금을 선택하셨습니다." << endl;
+        cout << "얼마 만큼의 현금을 송금하시겠습니까?" << endl;
+        
+        int num50000;
+        int num10000;
+        int num5000;
+        int num1000;
+        cout << "50,000원 몇 장을 송금하시겠습니까? ";
+        num50000 = input();
+        cout << "10,000원 몇 장을 송금하시겠습니까? ";
+        num10000 = input();
+        cout << "5,000원 몇 장을 송금하시겠습니까? ";
+        num5000 = input();
+        cout << "1,000원 몇 장을 송금하시겠습니까? ";
+        num1000 = input();
+
+        CASH inCash(num1000, num5000, num10000, num50000);
+
+        cout << "현금 송금 수수료: " << CASH_TRANSFER_FEE << endl;
+        cout << "수수료 포함 총 현금: " << inCash.getTotalAmountOfMoney() + CASH_TRANSFER_FEE << endl;
+        INSERTFEE:
+        cout << endl;
+        cout << "1) 수수료 지불" << endl;
+        cout << "0) 거래 취소 (메뉴로 돌아가기)" << endl;
+        cout << "===>";
+        
+        int cashselect = input();
+        if (cashselect == 0) {
+            cout << "거래가 취소되었습니다" << endl;
+            return; 
+        } else if (cashselect == 1){
+            CASHPAYMENT:
+            cout << endl;
+            cout << "1) 1000 x 5로 지불하기" << endl;
+            cout << "2) 5000 x 1로 지불하기" << endl;
+            cout << "===>";
+            int payselect = input();
+            if (payselect == 1) {
+                CASH fee1000(5, 0, 0, 0);
+                inATM.setCashPossesion(inATM.getCashPossesion() + inCash + fee1000);
+            }else if ( payselect == 2 ){
+                CASH fee5000(0, 1, 0, 0);
+                inATM.setCashPossesion(inATM.getCashPossesion() + inCash + fee5000);
+            }else {
+                cout <<"허용되지 않은 입력입니다" << endl;
+                goto CASHPAYMENT;
+            }
+            string transID = to_string(inDB.generateTransNum());
+
+            cout << endl;
+            inDB.getAccount(accountto).addMoney(inCash.getTotalAmountOfMoney());
+            cout << "송금이 계좌에 반영되었습니다." << endl;
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), TRANSFER, inCash.getTotalAmountOfMoney());
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), TRANSFER, inCash.getTotalAmountOfMoney());
+            return;
+
+        } else {
+            cout << "허용되지 않은 명령" << endl;
+            goto INSERTFEE;
+        }
+        
+
+    }else if (selection == 2){
+        cout << "계좌 이체를 선택하셨습니다" << endl;
+        cout << "계좌 이체를 원하는 금액을 입력해 주세요" << endl;
+        cout << "계좌 금액: " << inAccount.getAvailableMoney() << endl;
+        cout << endl;
+        cout << "===>";
+        int transmoney = input();
+
+        int transfee;
+
+        if (mybank == atmbank && tobank == atmbank){
+            transfee = TRANSFER_FEE_BETWEEN_PRIMARY;
+        } else if (mybank != atmbank && tobank != atmbank){
+            transfee = TRANSFER_FEE_BETWEEN_NONPRIMARY;
+        } else {
+            transfee = TRANSFER_FEE_BETWEEN_PRIMARY_AND_NONPRIMARY;
+        }
+
+        cout << endl;
+        cout << "수수료는 " << transfee << "원 입니다. 자동적으로 계좌에서 부과됩니다." << endl;
+        cout << "총 필요 금액: " << transmoney + transfee << endl;
+        PAYMENTCHECK:
+        cout << endl;
+        cout << "1) 확인" << endl;
+        cout << "0) 거래 취소 (메뉴로 돌아가기)" << endl;
+        cout << "===>";
+        int transselect = input();
+
+        if (transselect == 0){
+            cout << "거래가 취소되었습니다" << endl;
+            return;
+        } else if (transselect == 1){
+            if (inAccount.getAvailableMoney() < transmoney + transfee){
+                cout << "계좌에 충분한 금액이 없습니다" << endl;
+                cout << "거래가 취소되었습니다" << endl;
+                return;
+            }
+
+            string transID = to_string(inDB.generateTransNum());
+
+            inAccount.subtractMoney(transmoney + transfee);
+            inDB.getAccount(accountto).addMoney(transmoney);
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), TRANSFER, transmoney);
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), TRANSFER, transmoney);
+            cout << endl;
+            cout << "성공적으로 반영되었습니다" << endl;
+        } else {
+            cout << "허용되지 않은 입력" << endl;
             goto PAYMENTCHECK;
         }
 

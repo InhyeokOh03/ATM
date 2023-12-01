@@ -46,11 +46,33 @@ namespace Records {
     }
 
     // 트랜잭션 정보를 출력하는 메서드 구현
-    void Transaction::printTransaction() const {
+    void Transaction::printTransaction(){
         std::cout << "Transaction ID: " << transactionID << std::endl;
         std::cout << "Card ID: " << cardID << std::endl;
-        std::cout << "Transaction Type: " << transactionType << std::endl;
+        switch(transactionType){
+            case 1:
+                std::cout << "Transaction Type: " << "Deposit" << std::endl;
+            case 2:
+                std::cout << "Transaction Type: " << "Withdraw" << std::endl;
+            case 3:
+                std::cout << "Transaction Type: " << "Transfer" << std::endl;
+        }
         std::cout << "Transaction Amount: " << transactionAmount << std::endl;
+        std::cout << "-------------------------------------" << std::endl;
+    }
+
+    void Transaction::printTransaction_KR(){
+        std::cout << "거래 ID: " << transactionID << std::endl;
+        std::cout << "카드 ID: " << cardID << std::endl;
+        switch(transactionType){
+            case 1:
+                std::cout << "거래 유형: " << "입금" << std::endl;
+            case 2:
+                std::cout << "거래 유형: " << "출금" << std::endl;
+            case 3:
+                std::cout << "거래 유형: " << "송금" << std::endl;
+        }
+        std::cout << "거래 금액: " << transactionAmount << std::endl;
         std::cout << "-------------------------------------" << std::endl;
     }
 }

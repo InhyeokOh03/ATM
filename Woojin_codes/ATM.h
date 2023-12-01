@@ -33,6 +33,7 @@ namespace Records{
             void display();
             void displayforuser();
             void displaylifetimeTransaction();
+            void displaylifetimeTransaction_KR();
             void displaycurrTransaction();
         protected:
             std::string mBankName;

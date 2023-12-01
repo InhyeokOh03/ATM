@@ -102,6 +102,15 @@ namespace Records{
         lifetimeTransaction.clear();
     }
 
+    void ATM::displaylifetimeTransaction_KR(){
+        cout << "현재 세션에서의 거래 목록" << endl;
+        cout << "-------------------------------------" << endl;
+        for (auto iter = lifetimeTransaction.begin(); iter != lifetimeTransaction.end(); iter++){
+            iter->printTransaction();
+        }
+        lifetimeTransaction.clear();
+    }
+
     void ATM::displaycurrTransaction(){
         cout << "Transaction History" << endl;
         cout << "-------------------" << endl;

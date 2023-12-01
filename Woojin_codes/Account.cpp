@@ -48,6 +48,13 @@ namespace Records{
         return mAvailableMoney;
     }
     void Account::display() const{
+        cout << "Account [Bank: " << mBankName;
+        cout << ", Account ID: " << mAccountNumber;
+        cout << ", Owner: " << mUserName;
+        cout << "] Balance: " << mAvailableMoney << endl;;
+    }
+
+    void Account::display_KR() const{
         cout << "계정 [은행: " << mBankName;
         cout << ", 계좌 번호: " << mAccountNumber;
         cout << ", 소유자: " << mUserName;
