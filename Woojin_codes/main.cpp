@@ -21,6 +21,7 @@
 using namespace std;
 using namespace Records;
 int displayDBMenu(CentralDB& inDB);
+void DepositCashinATM(CentralDB& inDB);
 void makeATM(CentralDB& inDB);
 void makeAccountandCard(CentralDB& inDB, int bankNum);
 void displayAdminMode(CentralDB& inDB);
@@ -111,6 +112,8 @@ void displayAdminMode(CentralDB& inDB) {
     cout << "Admin Mode" << endl;
     cout << "----------------" << endl;
     cout << "1) Make New ATM" << endl;
+    cout << "2) Deposit Cash to ATM" << endl;
+    
     cout << "0) Back to ModeSelect" << endl;
     cout << endl;
     cout << "===>";
@@ -119,6 +122,10 @@ void displayAdminMode(CentralDB& inDB) {
         case 1:
             cout<< endl;
             makeATM(inDB);
+            break;
+        case 2:
+            cout << endl;
+            DepositCashinATM(inDB);
             break;
         case 0:
             cout<< endl;
@@ -527,6 +534,41 @@ int KR_ATMMenu(CentralDB& inDB, string inBankName){
     return selection;
 }
 
+void DepositCashinATM(CentralDB& inDB){
+    ATMSELECT:
+    int SerialNum = ATMSelect(inDB);
+    if (SerialNum == 0){
+        return;
+    }
+    string SerialNumber = to_string(SerialNum);
+    ATM tempATM;
+    try {
+        tempATM = inDB.getATM(SerialNumber);
+    } catch(exception&){
+        cerr << "Enter the correct Serial Number of ATM" << endl;
+        goto ATMSELECT;
+    }
+
+    cout << "How much cash you want to deposit to atm?" << endl;
+    int num50000;
+    int num10000;
+    int num5000;
+    int num1000;
+
+    cout << "Num of 50,000? ";
+    num50000 = input(inDB);
+    cout << "Num of 10,000? ";
+    num10000 = input(inDB);
+    cout << "Num of 5,000? ";
+    num5000 = input(inDB);
+    cout << "Num of 1,000? ";
+    num1000 = input(inDB);
+
+    cout << endl;
+    cout << "Successfully deposited!" << endl;
+    
+}
+
 void makeATM(CentralDB& inDB) {
     int banknum;
     inDB.displayBank();
@@ -928,6 +970,11 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     selection = input(inDB);
 
     if (selection == 1){
+        if (inATM.getCashPossesion().getTotalAmountOfMoney() == 0){
+            cout << "There are no money in ATM." << endl;
+            cout << "Contact administrator" << endl;
+            return;
+        }
         if (inATM.getWithdrawals() == 3){
             cout << "You reached withdrawal limit in this atm session. withdraw is limited to 3 times in a session" << endl;
             return; 
@@ -1024,6 +1071,11 @@ void KR_withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
     selection = input(inDB);
 
     if (selection == 1){
+        if (inATM.getCashPossesion().getTotalAmountOfMoney() == 0){
+            cout << "ATM에 현금이 없습니다." << endl;
+            cout << "관리자에게 문의하세요" << endl;
+            return;
+        }
         if (inATM.getWithdrawals() == 3){
             cout << "이 세션에서 출금 한도에 도달했습니다. 출금한도: 3회" << endl;
             return; 
@@ -1413,8 +1465,6 @@ void KR_transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) 
     } 
 
     
-
-
 }
 
 int input(CentralDB& inDB) {
