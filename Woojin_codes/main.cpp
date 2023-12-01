@@ -137,6 +137,10 @@ void displayAdminMode(CentralDB& inDB) {
 
 void bankMode(CentralDB& inDB){
     int bankNum = bankSelect(inDB);
+    if (bankNum == 0){
+        cout << endl;
+        return;
+    }
     int selection;
     cout << endl;
     cout << inDB.getBank(bankNum).getBankName() << " Account Making Service" << endl;
