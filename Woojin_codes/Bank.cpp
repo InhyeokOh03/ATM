@@ -46,7 +46,6 @@ namespace Records{
                         return *iter;
                     }
                 }
-        cerr << "No card with that ID" << endl;
         throw exception();
     }
     Account& Bank::addAccount(string inUserName, string inAccountNumber, std::string inPassword, int inAvailableMoney){
