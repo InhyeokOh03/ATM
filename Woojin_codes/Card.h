@@ -12,6 +12,8 @@ namespace Records {
             void setCardId(std::string inID);
             void setPassword(std::string inPassword);
             void setIssuingBank(std::string bankName);
+            void setadmin();
+            bool isadmin();
             std::string getCardID() const;
             // std::string getIdentificationNum() const;
             std::string getPassword() const;

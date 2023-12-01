@@ -106,7 +106,6 @@ namespace Records{
             }
         }
 
-        cerr << "No Account with that ID" << endl;
         throw exception();
     }
 

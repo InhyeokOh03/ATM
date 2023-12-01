@@ -23,6 +23,7 @@ namespace Records{
             Bank& getBank(std::string inBankName);
             Bank& getBank(int inBankNum);
             ATM& getATM(std::string inSerialNum);
+            Account& getAccount(std::string inID);
 
 
         protected:

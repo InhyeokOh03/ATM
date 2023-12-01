@@ -14,6 +14,10 @@ namespace Records {
         void setCardNum(std::string cardID);
         void setTransType(int type);
         void setAmountOfMoney(int amout);
+        std::string getTransactionID();
+        std::string getCardID();
+        std::string getTransactionType();
+        int getTransactionAmount();
 
     protected:
         std::string transactionID; // 트랜잭션 ID

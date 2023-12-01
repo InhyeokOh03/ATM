@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "ATM.h"
 
 using namespace std;
@@ -90,6 +91,40 @@ namespace Records{
 
     void ATM::displayforuser(){
         cout << "[ATM] [SN: " << mSerialNum << "] 관리 은행: " << mBankName << endl;
+    }
+
+    void ATM::displaylifetimeTransaction(){
+        cout << "Your transaction in this atm session" << endl;
+        cout << "-------------------------------------" << endl;
+        for (auto iter = lifetimeTransaction.begin(); iter != lifetimeTransaction.end(); iter++){
+            iter->printTransaction();
+        }
+        lifetimeTransaction.clear();
+    }
+
+    void ATM::displaycurrTransaction(){
+        cout << "Transaction History" << endl;
+        cout << "-------------------" << endl;
+        for (auto iter = currTransaction.begin(); iter != currTransaction.end(); iter++){
+            iter->printTransaction();
+        }
+
+        string line;
+        ofstream file("Transaction_History.txt");
+        if(file.is_open()){
+            file << "Transaction History\n";
+            file << "-------------------\n";
+            for (int i = 0; i<currTransaction.size(); i++){
+                file << "Transaction ID: " << currTransaction[i].getTransactionID() << "\n";
+                file << "Card ID: " << currTransaction[i].getCardID() << "\n";
+                file << "Transaction Type: " << currTransaction[i].getTransactionType() << "\n";
+                file << "Transaction Amount: " << currTransaction[i].getTransactionAmount() << "\n";
+                file << "-------------------------------------\n"; 
+            }
+            file.close();
+        } else {
+            cout <<"error" << endl;
+        }
     }
 
 }

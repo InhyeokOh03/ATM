@@ -26,7 +26,9 @@ void makeAccountandCard(CentralDB& inDB, int bankNum);
 void displayAdminMode(CentralDB& inDB);
 void bankMode(CentralDB& inDB);
 void ATMMode(CentralDB& inDB);
+void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM);
 void ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount);
+int ATMADMINMENU(string inBankName);
 int ATMMenu(string inBankName);
 int bankSelect(CentralDB& inDB);
 int ATMSelect(CentralDB& inDB);
@@ -157,6 +159,7 @@ void ATMMode(CentralDB& inDB){
         cerr << "Enter the correct Serial Number of ATM" << endl;
         goto ATMSELECT;
     }
+    ATMSERVICE:
 
     cout << endl;
     cout << "Hello. This is " << tempATM.getBankName() << "ATM service." <<endl;
@@ -164,16 +167,33 @@ void ATMMode(CentralDB& inDB){
     cout << "To start, Please insert your debit card. (Input your Card Number)" << endl;
     cout << "===>";
     string cardnum = input_str();
+    Account tempaccount;
+    try {
+        tempaccount = inDB.getAccount(cardnum);
+    } catch (exception&) {
+        cout << "please re-enter your account number" << endl;
+        goto ATMSERVICE;
+    }
 
     cout << endl;
+    int threecount = 0;
     VALIDATION:
     cout << "Enter your account(card) password." << endl;
     cout << "===>";
 
     string password = input_str();
+    bool isAdmin = false;
+    try {
+        isAdmin = inDB.getBank(tempATM.getBankName()).getCard(cardnum).isadmin();
+    } catch (exception&){
 
-    int threecount = 0;
-    
+    }
+
+    if (isAdmin){
+        ATMUI_ADMIN(inDB, inDB.getBank(tempATM.getBankName()), inDB.getATM(SerialNumber));
+        return;
+    }
+
     if (!tempATM.IsMulti()){
         try {
             inDB.getBank(tempATM.getBankName()).getCard(cardnum);
@@ -191,10 +211,55 @@ void ATMMode(CentralDB& inDB){
             }
             goto VALIDATION;
         }
+        cout << "You successfully login to ATM" << endl;
+        ATMUI(inDB, inDB.getBank(tempATM.getBankName()), inDB.getATM(SerialNumber), inDB.getBank(tempATM.getBankName()).getAccount(cardnum));
+        return;
+
+    } else {
+        try {
+            inDB.getBank(tempaccount.getBankName()).getCard(cardnum);
+        } catch (exception&){
+            cout << "Error: Invalid Card" << endl;
+            return;
+        }
+
+        if (!inDB.getBank(tempaccount.getBankName()).tryLogin(cardnum, password)){
+            cout << "Error: You Cannot eccess ATM because your card number or password was wrong." << endl;
+            cout << "If you enter wrong password three times in a row, session will shut down. ["<< ++threecount << " times wrong]" << endl;
+            if (threecount == 3){
+                cout << "Error: You entered wrong password three times. Discharge the card." << endl;
+                return;
+            }
+            goto VALIDATION;
+        }
+        cout << "You successfully login to ATM" << endl;
+        ATMUI(inDB, inDB.getBank(tempaccount.getBankName()), inDB.getATM(SerialNumber), inDB.getAccount(cardnum));
+        return;
+
     }
+
+
     cout << "You successfully login to ATM" << endl;
     ATMUI(inDB, inDB.getBank(tempATM.getBankName()), inDB.getATM(SerialNumber), inDB.getBank(tempATM.getBankName()).getAccount(cardnum));
 
+}
+
+void ATMUI_ADMIN(CentralDB& inDB, Bank& inBank, ATM& inATM){
+    bool done = false;
+    while (!done) {
+        int selection = ATMADMINMENU(inBank.getBankName());
+        switch(selection){
+            case 1:
+                cout << endl;
+                inATM.displaycurrTransaction();
+                break;
+            case 0:
+                done = true;
+                break;
+            default:
+                cerr << "unknown command" << endl;
+        }
+    }
 }
 
 void ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount){
@@ -213,16 +278,32 @@ void ATMUI(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount){
                 break;
             case 3:
                 cout << endl;
-                // send
+                transfer(inDB, inBank, inATM, inAccount);
+                break;
+            case 4:
+                cout << endl;
+                inAccount.display();
                 break;
             case 0:
-                // lifetimetransaction 출력
+                inATM.displaylifetimeTransaction();
                 done = true;
                 break;
             default:
                 cerr << "Unknown command." << endl;
         }
     }
+}
+
+int ATMADMINMENU(string inBankName){
+    int selection;
+    cout << endl;
+    cout << inBankName << " ATM admin service" << endl;
+    cout << "-------------------------" << endl;
+    cout << "1) Transaction History" << endl;
+    cout << "0) Quit" << endl;
+    cout << "===>";
+    selection = input();
+    return selection;
 }
 
 int ATMMenu(string inBankName){
@@ -233,6 +314,7 @@ int ATMMenu(string inBankName){
     cout << "1) Deposit" << endl;
     cout << "2) Withdraw" << endl;
     cout << "3) Send" << endl;
+    cout << "4) Show my account info" << endl;
     cout << "0) Quit" << endl;
     cout << "===>";
     selection = input();
@@ -342,6 +424,7 @@ void makeAccountandCard(CentralDB& inDB, int bankNum){
 
     if(password == "admin99"){
         isAdmin = true;
+        cout << "your card set admin card" << endl;
     }
 
     cout << endl;
@@ -352,6 +435,10 @@ void makeAccountandCard(CentralDB& inDB, int bankNum){
     
     inDB.getBank(bankNum).addAccount(username, to_string(CardNum), password, 0);
     inDB.getBank(bankNum).addUserCard(to_string(CardNum), password, isAdmin);
+
+    if (isAdmin){
+        inDB.getBank(bankNum).getCard(to_string(CardNum)).setadmin();
+    }
     cout << "Your Card and Account successfully generated!" << endl;
     cout << endl;
     cout << "Card Info" << endl;
@@ -361,6 +448,7 @@ void makeAccountandCard(CentralDB& inDB, int bankNum){
     cout << "Balance: " << 0 << endl;
     cout << "Card Num: " << CardNum << endl;
     cout << "Integrated password: " << password << endl; 
+    cout << "Is admin card?: " << inDB.getBank(bankNum).getCard(to_string(CardNum)).isadmin();
 }
 
 int bankSelect(CentralDB& inDB) {
@@ -528,13 +616,13 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
         int num5000;
         int num1000;
     
-        cout << "Number of 50,000? " << "[remain: " <<tempcash.get50000() << "]" << endl;
+        cout << "Number of 50,000? " << "[in ATM remain: " <<tempcash.get50000() << "]" << endl;
         num50000 = input();
-        cout << "Number of 10,000? "<< "[remain: " <<tempcash.get10000() << "]" << endl;
+        cout << "Number of 10,000? "<< "[in ATM remain: " <<tempcash.get10000() << "]" << endl;
         num10000 = input();
-        cout << "Number of 5,000? "<< "[remain: " <<tempcash.get5000() << "]" << endl;
+        cout << "Number of 5,000? "<< "[in ATM remain: " <<tempcash.get5000() << "]" << endl;
         num5000 = input();
-        cout << "Number of 1,000? "<< "[remain: " <<tempcash.get1000() << "]" << endl;
+        cout << "Number of 1,000? "<< "[in ATM remain: " <<tempcash.get1000() << "]" << endl;
         num1000 = input();
 
         if (num50000 > tempcash.get50000() || num10000 > tempcash.get10000() || num5000 > tempcash.get5000() || num1000 > tempcash.get1000()){
@@ -602,6 +690,7 @@ void withdraw(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
 
 void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
 
+    SELECT:
     cout << "Cash transfer of Fund transfer? Select one" << endl;
     cout << "1) Cash transfer" << endl;
     cout << "2) Fund transfer" << endl;
@@ -610,6 +699,11 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     int selection = input();
     if (selection == 0) {
         return;
+    }
+    if (selection == 1 || selection == 2 || selection == 0){}
+    else {
+        cout << "Unknown command" << endl;
+        goto SELECT;
     }
 
     TRANSFER_:
@@ -624,14 +718,126 @@ void transfer(CentralDB& inDB, Bank& inBank, ATM& inATM, Account& inAccount) {
     }
     string tobank = inDB.getAccount(accountto).getBankName();
     string toaccount = inDB.getAccount(accountto).getAccountNumber();
+    string atmbank = inATM.getBankName();
+    string mybank = inAccount.getBankName();
 
     if (selection == 1){
+        cout << "You selected Cash transfer" << endl;
+        cout << "How much money you want to transfer?" << endl;
+        
+        int num50000;
+        int num10000;
+        int num5000;
+        int num1000;
+        cout << "Number of 50,000? ";
+        num50000 = input();
+        cout << "Number of 10,000? ";
+        num10000 = input();
+        cout << "Number of 5,000? ";
+        num5000 = input();
+        cout << "Number of 1,000? ";
+        num1000 = input();
 
-    }
+        CASH inCash(num1000, num5000, num10000, num50000);
 
-    cout << "How much money you want to transfer?" << endl;
-    cout << "===>";
-    int money = input();
+        cout << "Cash transfer fee is " << CASH_TRANSFER_FEE << endl;
+        cout << "Total amount of Cash that you need to insert is " << inCash.getTotalAmountOfMoney() + CASH_TRANSFER_FEE << endl;
+        INSERTFEE:
+        cout << endl;
+        cout << "1) insert fee" << endl;
+        cout << "0) Cancel transfer (back to atm menu)" << endl;
+        cout << "===>";
+        
+        int cashselect = input();
+        if (cashselect == 0) {
+            cout << "transfer canceled and your cash returned" << endl;
+            return; 
+        } else if (cashselect == 1){
+            CASHPAYMENT:
+            cout << endl;
+            cout << "1) Pay with 1000 x 5" << endl;
+            cout << "2) Pay with 5000 x 1" << endl;
+            cout << "===>";
+            int payselect = input();
+            if (payselect == 1) {
+                CASH fee1000(5, 0, 0, 0);
+                inATM.setCashPossesion(inATM.getCashPossesion() + inCash + fee1000);
+            }else if ( payselect == 2 ){
+                CASH fee5000(0, 1, 0, 0);
+                inATM.setCashPossesion(inATM.getCashPossesion() + inCash + fee5000);
+            }else {
+                cout <<"Unknown command" << endl;
+                goto CASHPAYMENT;
+            }
+            string transID = to_string(inDB.generateTransNum());
+
+            cout << endl;
+            inDB.getAccount(accountto).addMoney(inCash.getTotalAmountOfMoney());
+            cout << "Your payment reflected to account!" << endl;
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), TRANSFER, inCash.getTotalAmountOfMoney());
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), TRANSFER, inCash.getTotalAmountOfMoney());
+            return;
+
+        } else {
+            cout << "unknown command" << endl;
+            goto INSERTFEE;
+        }
+        
+
+    }else if (selection == 2){
+        cout << "You selected fund transfer" << endl;
+        cout << "How much money you want to transfer?" << endl;
+        cout << "Your account balance: " << inAccount.getAvailableMoney() << endl;
+        cout << endl;
+        cout << "===>";
+        int transmoney = input();
+
+        int transfee;
+
+        if (mybank == atmbank && tobank == atmbank){
+            transfee = TRANSFER_FEE_BETWEEN_PRIMARY;
+        } else if (mybank != atmbank && tobank != atmbank){
+            transfee = TRANSFER_FEE_BETWEEN_NONPRIMARY;
+        } else {
+            transfee = TRANSFER_FEE_BETWEEN_PRIMARY_AND_NONPRIMARY;
+        }
+
+        cout << endl;
+        cout << "Transfer fee is " << transfee << " and will be automatically paid with your account." << endl;
+        cout << "So total amount of payment is " << transmoney + transfee << endl;
+        PAYMENTCHECK:
+        cout << endl;
+        cout << "1) OK" << endl;
+        cout << "0) Cancel transfer (back to atm menu)" << endl;
+        cout << "===>";
+        int transselect = input();
+
+        if (transselect == 0){
+            cout << "Transfer canceled." << endl;
+            return;
+        } else if (transselect == 1){
+            if (inAccount.getAvailableMoney() < transmoney + transfee){
+                cout << "There is not enough money in the account." << endl;
+                cout << "Transfer canceled." << endl;
+                return;
+            }
+
+            string transID = to_string(inDB.generateTransNum());
+
+            inAccount.subtractMoney(transmoney + transfee);
+            inDB.getAccount(accountto).addMoney(transmoney);
+            inATM.addCurrTransaction(transID, inAccount.getAccountNumber(), TRANSFER, transmoney);
+            inATM.addLifetimeTransaction(transID, inAccount.getAccountNumber(), TRANSFER, transmoney);
+            cout << endl;
+            cout << "Successfully reflected to accounts" << endl;
+        } else {
+            cout << "Unknown command" << endl;
+            goto PAYMENTCHECK;
+        }
+
+    } 
+
+    
 
 
 }

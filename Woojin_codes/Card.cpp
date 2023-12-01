@@ -10,9 +10,9 @@ namespace Records {
     , isAdmin(false)
     {
     }
-    Card::Card(string cardID, bool isAdmin = false) 
+    Card::Card(string cardID, bool isaadmin = false) 
     : mCardID(cardID)
-    , isAdmin(isAdmin) 
+    , isAdmin(isaadmin) 
     {
     }
 
@@ -24,6 +24,14 @@ namespace Records {
     }
     void Card::setIssuingBank(string bankName){
         mIssuingBank = bankName;
+    }
+
+    void Card::setadmin(){
+        isAdmin = true;
+    }
+
+    bool Card::isadmin(){
+        return isAdmin;
     }
 
     std::string Card::getCardID() const{
